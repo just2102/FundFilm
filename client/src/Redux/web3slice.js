@@ -1,7 +1,8 @@
-import { createSlice, configureStore } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   account: null,
+  signer: null,
   balance: null,
   network: null,
   provider: null,
@@ -15,6 +16,9 @@ export const web3Slice = createSlice({
   reducers: {
     setAccount: (state, action) => {
       state.account = action.payload;
+    },
+    setSigner: (state,action) => {
+      state.signer = action.payload;
     },
     setBalance: (state, action) => {
       state.balance = action.payload;
@@ -34,6 +38,6 @@ export const web3Slice = createSlice({
   },
 });
 
-export const { setAccount, setBalance, setNetwork, setProvider, setContract, addTransaction } = web3Slice.actions;
+export const { setAccount, setSigner, setBalance, setNetwork, setProvider, setContract, addTransaction } = web3Slice.actions;
 
 export default web3Slice.reducer

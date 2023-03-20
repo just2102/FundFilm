@@ -3,6 +3,7 @@ pragma solidity ^0.8.18;
 
 contract FundFilm {
     uint256 numberOfCampaigns = 0;
+    uint public constant SERVICE_FEE = 10; // 10%
 
     struct Campaign {
         address owner;
@@ -18,6 +19,7 @@ contract FundFilm {
 
     mapping(uint256 => Campaign) public campaigns;
 
+    event CampaignStarted(string _title, string _description, uint256 _target, uint256 _deadline, string _image);
     function startCampaign(
         string memory _title,
         string memory _description,
@@ -28,7 +30,7 @@ contract FundFilm {
         Campaign storage newCampaign = campaigns[numberOfCampaigns];
         // check for correct date
         require(
-            newCampaign.deadline > block.timestamp,
+            _deadline > block.timestamp,
             "Deadline should be in the future"
         );
         newCampaign.owner = msg.sender;
@@ -39,9 +41,11 @@ contract FundFilm {
         newCampaign.image = _image;
 
         numberOfCampaigns++;
+        emit CampaignStarted(_title, _description, _target, _deadline, _image);
         return numberOfCampaigns--;
     }
 
+    event DonatedToCampaign (address donator, uint256 _campaignId, uint256 _amount);
     function donateToCampaign(uint256 _id) public payable {
         Campaign storage campaign = campaigns[_id];
         campaign.donators.push(msg.sender);
@@ -50,6 +54,7 @@ contract FundFilm {
         (bool sent, ) = payable(campaign.owner).call{value: msg.value}("");
         require(sent, "Donation failed");
         campaign.amountCollected += msg.value;
+        emit DonatedToCampaign(msg.sender, _id, msg.value);
     }
 
     function getDonators(uint256 _id) view public returns(address[] memory, uint256[] memory) {
@@ -73,8 +78,12 @@ contract FundFilm {
         require(campaigns[_campaignId].deadline <= block.timestamp, "Campaign hasn't ended yet");
         _;
     }
+
+    event WithdrewFromCampaign (uint256 _campaignId, address _owner, uint256 _amountCollected);
     function withdrawFromCampaign(uint256 _campaignId) onlyCampaignOwner(_campaignId) campaignHasEnded(_campaignId) public {
         Campaign memory campaign = campaigns[_campaignId];
-        payable(campaign.owner).transfer(campaign.amountCollected);
+        uint sumAfterFee = campaign.amountCollected - ((campaign.amountCollected * SERVICE_FEE) / 100);
+        payable(campaign.owner).transfer(sumAfterFee);
+        emit WithdrewFromCampaign(_campaignId, campaign.owner, sumAfterFee);
     }
 }

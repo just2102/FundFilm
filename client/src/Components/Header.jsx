@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
-import { setAccount, setProvider } from "../Redux/web3slice";
+import { setAccount, setContract, setProvider, setSigner } from "../Redux/web3slice";
+import contractArtifact from "../../../web3/artifacts/contracts/FundFilm.sol/FundFilm.json"
 import { ethers } from "ethers";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
@@ -24,8 +25,11 @@ function Header() {
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = web3Provider.getSigner();
         const account = await signer.getAddress();
+        const contract = new ethers.Contract("0xD7ec34d4Ccf05BF1918Fe14d79AA65dcC94ff624", contractArtifact.abi, signer)
         dispatch(setProvider(web3Provider));
         dispatch(setAccount(account));
+        dispatch(setSigner(signer));
+        dispatch(setContract(contract));
       } else throw new Error("Metamask not found");
     } catch (error) {
       console.error(error);
