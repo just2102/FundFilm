@@ -35,9 +35,18 @@ export const web3Slice = createSlice({
     addTransaction: (state, action) => {
       state.transactions.push(action.payload);
     },
+    disconnect: (state) => {
+      state.account = initialState.account;
+      state.balance = initialState.balance;
+      state.contract = initialState.contract;
+      state.network = initialState.network;
+      state.provider = initialState.provider;
+      state.signer = initialState.signer;
+      state.transactions = initialState.transactions;
+    }
   },
 });
 
-export const { setAccount, setSigner, setBalance, setNetwork, setProvider, setContract, addTransaction } = web3Slice.actions;
+export const { setAccount, setSigner, setBalance, setNetwork, setProvider, setContract, addTransaction, disconnect } = web3Slice.actions;
 
 export default web3Slice.reducer

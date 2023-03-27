@@ -7,6 +7,7 @@ describe("FundFilm", function() {
     let acc2;
     let contract;
     let provider;
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     beforeEach(async function() {
         [acc1, acc2] = await ethers.getSigners();
@@ -92,7 +93,8 @@ describe("FundFilm", function() {
         let title = "Blablabla";
         let description = "My New Campaign Description";
         let target = ethers.utils.parseEther("50.0");
-        let deadline = 1901052120;
+        let deadline = Math.floor(Date.now() / 1000) + 15;
+        console.log(deadline)
         let image = "My New Campaign Image";
         const tx = await contract.startCampaign(title,description,target,deadline,image)
         await tx.wait();
@@ -102,12 +104,44 @@ describe("FundFilm", function() {
         const tx2 = await contract.donateToCampaign(campaignId, {value: amount})
         await tx2.wait();
 
+        await delay(15000);
+
         const expectedWithdrawalAmount = ethers.utils.parseEther("45.0") // 10% service fee
         await expect(contract.connect(acc1).withdrawFromCampaign(0))
         .to.emit(contract, "WithdrewFromCampaign")
         .withArgs(campaignId, acc1.address, expectedWithdrawalAmount);
     })
     it('should update the contract balance after withdrawal properly', async() => {
+        let title = "Blablabla";
+        let description = "My New Campaign Description";
+        let target = ethers.utils.parseEther("50.0");
+        let deadline = Math.floor(Date.now() / 1000) + 20;
+        console.log(deadline)
+        let image = "My New Campaign Image";
+        const tx = await contract.startCampaign(title,description,target,deadline,image)
+        await tx.wait();
+        // donate from acc2
+        let campaignId = 0
+        const amount = ethers.utils.parseEther("55.0"); // send 55 ETH
+        const tx2 = await contract.connect(acc2).donateToCampaign(campaignId, {value: amount})
+        await tx2.wait();
+
+        const oldContractBalance = await provider.getBalance(contract.address);
+        // withdraw from campaign from acc1 after delay
+        await delay(19000);
+
+        const tx3 = await contract.connect(acc1).withdrawFromCampaign(0);
+        await tx3.wait();
+        // check new contract balance
+        const newContractBalance = await provider.getBalance(contract.address);
+        const expectedNewContractBalance = ethers.utils.parseEther("5.5"); // 10% from 55 ETH
+        expect(newContractBalance).to.equal(expectedNewContractBalance)
+        // and check new owner balance
+        const newOwnerBalance = await provider.getBalance(acc1.address);
+        const expectedNewOwnerBalance = ethers.utils.parseEther("1000.0");
+        expect(newOwnerBalance).to.be.greaterThan(expectedNewOwnerBalance);
+    })
+    it('should not allow withdrawal before expiration', async() => {
         let title = "Blablabla";
         let description = "My New Campaign Description";
         let target = ethers.utils.parseEther("50.0");
@@ -123,23 +157,16 @@ describe("FundFilm", function() {
 
         const oldContractBalance = await provider.getBalance(contract.address);
         // withdraw from campaign from acc1
-        const tx3 = await contract.connect(acc1).withdrawFromCampaign(0);
-        await tx3.wait();
-        // check new contract balance
-        const newContractBalance = await provider.getBalance(contract.address);
-        const expectedNewContractBalance = ethers.utils.parseEther("5.5"); // 10% from 55 ETH
-        expect(newContractBalance).to.equal(expectedNewContractBalance)
-        // and check new owner balance
-        const newOwnerBalance = await provider.getBalance(acc1.address);
-        const expectedNewOwnerBalance = ethers.utils.parseEther("1000.0");
-        expect(newOwnerBalance).to.be.greaterThan(expectedNewOwnerBalance);
+        await expect(contract.connect(acc1).withdrawFromCampaign(0))
+        .to.be.revertedWith("Campaign hasn't ended yet")
     })
 
     it('platform owner should be able to withdraw service fees', async() => {
         let title = "Blablabla";
         let description = "My New Campaign Description";
         let target = ethers.utils.parseEther("50.0");
-        let deadline = 1901052120;
+        let deadline = Math.floor(Date.now() / 1000) + 30;
+        console.log(deadline)
         let image = "My New Campaign Image";
         const tx = await contract.startCampaign(title,description,target,deadline,image)
         await tx.wait();
@@ -148,7 +175,8 @@ describe("FundFilm", function() {
         const amount = ethers.utils.parseEther("55.0"); // send 55 ETH
         const tx2 = await contract.connect(acc2).donateToCampaign(campaignId, {value: amount})
         await tx2.wait();
-        // withdraw from campaign
+        // withdraw from campaign after delay
+        await delay(30000);
         const tx3 = await contract.connect(acc1).withdrawFromCampaign(0);
         await tx3.wait();
         // withdraw service fees

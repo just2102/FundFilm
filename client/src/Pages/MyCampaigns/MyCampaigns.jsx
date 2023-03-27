@@ -1,21 +1,25 @@
 import React from "react";
 import Modal from "react-modal";
 import { useState } from "react";
-import "../styles/MyCampaigns.css";
+import "../../styles/MyCampaigns.css";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
+import { ethers } from "ethers";
 
 
 function AddCampaignModal() {
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const contract = useSelector(state=>state.web3.contract)
     const provider = useSelector(state=>state.web3.provider)
+
+    const campaigns = useSelector(state=>state.campaigns.campaigns)
+    const myCampaigns = useSelector(state=>state.campaigns.myCampaigns)
+    const isFetching = useSelector(state=>state.campaigns.isFetching)
+    const isAddingCampaign = useSelector(state=>state.campaigns.isAddingCampaign)
     const onSubmit = async(data) => {
-      // const blockNumber = await contract.provider.getBlockNumber();
-      // const timestampOfCurrentBlock = await contract.provider.getBlock(blockNumber).timestamp;
-      // console.log(timestampOfCurrentBlock)
       try {
         let {title, description, target, deadline, image} = data;
+        target = ethers.utils.parseEther(target)
         image = "https://res.cloudinary.com/do6ggmadv/image/upload/v1677472930/zds1qkmvjjsh32pwsqe5.png"
         const result = await contract.startCampaign(
           title,
@@ -57,7 +61,11 @@ function AddCampaignModal() {
             {required: {value:true, message: 'This field is required'},
             min: {value: 0.0049, message: "Should be at least 0.005"},
             max: {value: 50000, message: "Please provide a correct value"}})}
-            step="any" id="target" type="number"  placeholder="50..."/></div>
+            step="any" id="target" type="number"  placeholder="50..."/>
+            <select name="unit" id="unit">
+              <option value="eth">ETH</option>
+            </select>
+            </div>
             <span className="form_error">{errors.target && errors.target.message}</span>
 
             <label htmlFor="deadline">Deadline: </label>
@@ -102,7 +110,7 @@ function MyCampaigns() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   return (
-    <div className="mycampaigns">
+    <div className="campaigns my">
       {account 
       ? <button onClick={() => setModalIsOpen(!modalIsOpen)}>
         Start a campaign

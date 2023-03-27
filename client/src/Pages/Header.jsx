@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { setAccount, setContract, setProvider, setSigner } from "../Redux/web3slice";
+import { disconnect, setAccount, setContract, setProvider, setSigner } from "../Redux/web3slice";
 import contractArtifact from "../../../web3/artifacts/contracts/FundFilm.sol/FundFilm.json"
 import { ethers } from "ethers";
 import { useState } from "react";
@@ -7,13 +7,27 @@ import { NavLink } from "react-router-dom";
 import "../styles/Header.css"
 import arrowDownConnected from "../assets/arrowdown-connected.svg"
 import nightMode from "../assets/nightmode.svg"
+import logoutIcon from "../assets/logout.svg"
+import copyIcon from "../assets/copy.svg"
+import Snackbar from "@mui/material/Snackbar"
 
 function Header() {
-  const [isActive, setIsActive] = useState("dashboard");
-  const [toggleDrawer, setToggleDrawer] = useState(false)
   const account = useSelector((state) => state.web3.account);
   const provider = useSelector((state) => state.web3.provider);
   const dispatch = useDispatch();
+
+  const [isActive, setIsActive] = useState("dashboard");
+
+  const [toggleDrawer, setToggleDrawer] = useState(false)
+  const [copySnackbarOpen, setCopySnackbarOpen] = useState(false)
+
+  const handleCopy = () => {
+    setCopySnackbarOpen(true);
+    navigator.clipboard.writeText(account)
+  }
+  const handleDisconnect = () => {
+    dispatch(disconnect());
+  }
 
   const [isConnecting, setIsConnecting] = useState(false);
 
@@ -25,7 +39,7 @@ function Header() {
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = web3Provider.getSigner();
         const account = await signer.getAddress();
-        const contract = new ethers.Contract("0xD7ec34d4Ccf05BF1918Fe14d79AA65dcC94ff624", contractArtifact.abi, signer)
+        const contract = new ethers.Contract("0x7F714Dc84907DAC784F36e02b349bfE260a4AD39", contractArtifact.abi, signer)
         dispatch(setProvider(web3Provider));
         dispatch(setAccount(account));
         dispatch(setSigner(signer));
@@ -47,11 +61,31 @@ function Header() {
 
   return (
     <header>
+      <Snackbar
+      anchorOrigin={{ vertical:'top', horizontal:'right' }}
+      open={copySnackbarOpen}
+      autoHideDuration={1500}
+      onClose={()=>setCopySnackbarOpen(false)}
+      message="Address copied"></Snackbar>
       <NavLink to={"/campaigns"}>Campaigns</NavLink>
       <NavLink to={"/mycampaigns"}>My Campaigns</NavLink>
       <NavLink to={"/about"}>About</NavLink>
       {account ? (
-        <span>{sliceAddress(account)} <img src={arrowDownConnected} alt="arrowDown" /></span>
+        <span onClick={()=>setToggleDrawer(!toggleDrawer)}>{sliceAddress(account)} 
+          <img src={arrowDownConnected} alt="arrowDown" />
+          {toggleDrawer && 
+            <div className="drawer">
+              <div onClick={handleCopy} className="drawer_action copy">
+                <img src={copyIcon} alt="copyAddress" />
+                <span>Copy</span>
+              </div>
+
+              <div onClick={handleDisconnect} className="drawer_action logout">
+                <img src={logoutIcon} alt="logout" />
+                <span>Disconnect</span>
+              </div>
+            </div> }
+        </span>
       ) : (
         <button disabled={isConnecting} onClick={handleConnectWallet}>
           {isConnecting ? "Connecting..." : "Connect Wallet"}

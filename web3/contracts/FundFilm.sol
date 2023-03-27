@@ -1,10 +1,11 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: GPL-3.0
+
 pragma solidity ^0.8.18;
 
 contract FundFilm {
     address payable public platformOwner;
-    uint256 numberOfCampaigns = 0;
-    uint256 public constant SERVICE_FEE = 10; // 10%
+    uint256 public numberOfCampaigns = 0;
+    uint256 public constant SERVICE_FEE = 10;
 
     constructor() {
         platformOwner = payable(msg.sender);
@@ -12,6 +13,7 @@ contract FundFilm {
 
     struct Campaign {
         address owner;
+        uint256 campaignId;
         string title;
         string description;
         uint256 target;
@@ -26,13 +28,10 @@ contract FundFilm {
     mapping(uint256 => Campaign) public campaigns;
 
     event CampaignStarted(
-        string _title,
-        string _description,
-        uint256 _target,
-        uint256 _deadline,
-        string _image
-    );
-
+    address owner, uint256 campaignId, 
+    string _title, string _description, 
+    uint256 _target, uint256 _deadline, 
+    string _image);
     function startCampaign(
         string memory _title,
         string memory _description,
@@ -40,32 +39,25 @@ contract FundFilm {
         uint256 _deadline,
         string memory _image
     ) public returns (uint256) {
-        // check for correct date
-        require(
-            _deadline > block.timestamp,
-            "Deadline should be in the future"
-        );
+        require(_deadline > block.timestamp,"Deadline should be in the future");
         Campaign storage newCampaign = campaigns[numberOfCampaigns];
         newCampaign.owner = msg.sender;
+        newCampaign.campaignId = numberOfCampaigns;
         newCampaign.title = _title;
         newCampaign.description = _description;
         newCampaign.target = _target;
         newCampaign.deadline = _deadline;
         newCampaign.image = _image;
 
-
         numberOfCampaigns++;
-        emit CampaignStarted(_title, _description, _target, _deadline, _image);
-        return numberOfCampaigns--;
+        emit CampaignStarted(msg.sender, newCampaign.campaignId, _title, _description, _target, _deadline, _image);
+        return newCampaign.campaignId;
     }
 
     event DonatedToCampaign(address donator,uint256 _campaignId,uint256 _amount);
     function donateToCampaign(uint256 _id) public payable {
         Campaign storage campaign = campaigns[_id];
-        require(
-            campaign.hasWithdrawn == false,
-            "The owner of this campaign has already withdrawn from it. No further donations allowed."
-        );
+        require(campaign.hasWithdrawn == false,"The owner of this campaign has already withdrawn from it. No further donations allowed.");
         campaign.donators.push(msg.sender);
         campaign.donations.push(msg.value);
 
@@ -77,25 +69,15 @@ contract FundFilm {
     }
 
     modifier onlyCampaignOwner(uint256 _campaignId) {
-        require(
-            msg.sender == campaigns[_campaignId].owner,
-            "Only campaign owners can withdraw from campaigns!"
-        );
+        require(msg.sender == campaigns[_campaignId].owner,"Only campaign owners can withdraw from campaigns!");
         _;
     }
     modifier campaignHasEnded(uint256 _campaignId) {
-        require(
-            campaigns[_campaignId].deadline <= block.timestamp,
-            "Campaign hasn't ended yet"
-        );
+        require(campaigns[_campaignId].deadline <= block.timestamp,"Campaign hasn't ended yet");
         _;
     }
-    event WithdrewFromCampaign(uint256 _campaignId, address _owner,uint256 _amountCollected);
-    function withdrawFromCampaign(uint256 _campaignId)
-        public
-        onlyCampaignOwner(_campaignId)
-    // campaignHasEnded(_campaignId) add when everything else has been tested
-    {
+    event WithdrewFromCampaign(uint256 _campaignId, address _owner,uint256 _amountWithdrawn);
+    function withdrawFromCampaign(uint256 _campaignId) onlyCampaignOwner(_campaignId) campaignHasEnded(_campaignId) public {
         Campaign storage campaign = campaigns[_campaignId];
         require(campaign.hasWithdrawn == false, "You can only withdraw once!");
         uint256 sumAfterFee = campaign.amountCollected - ((campaign.amountCollected * SERVICE_FEE) / 100);
