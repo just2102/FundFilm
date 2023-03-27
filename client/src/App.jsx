@@ -8,7 +8,7 @@ import Profile from "./Pages/Profile";
 import MyCampaigns from "./Pages/MyCampaigns/MyCampaigns";
 import Campaigns from "./Pages/Campaigns/Campaigns";
 import Campaign from "./Pages/Campaigns/Campaign";
-import TestRoute from "./TestRoute";
+
 function App() {
   return (
     <Provider store={store}>

@@ -26,6 +26,7 @@ const Campaigns = () => {
     const filteredCampaigns = allCampaigns.filter(campaign=>{
         return campaign.title.toLowerCase().includes(searchQuery.toLowerCase())
     })
+    
 
     useEffect(()=>{
         if (allCampaigns.length === 0) {

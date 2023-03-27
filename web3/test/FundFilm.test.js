@@ -1,7 +1,6 @@
 const { expect } = require("chai");
 const {ethers} = require("hardhat");
 
-
 describe("FundFilm", function() {
     let acc1;
     let acc2;
@@ -29,10 +28,11 @@ describe("FundFilm", function() {
         let target = ethers.utils.parseEther("50.0");
         let deadline = 1901052120;
         let image = "My New Campaign Image";
+        let video = "My New Campaign Video"
 
-        await expect(contract.startCampaign(title,description,target,deadline,image))
+        await expect(contract.startCampaign(title,description,target,deadline,image,video))
         .to.emit(contract, "CampaignStarted")
-        .withArgs(title,description,target,deadline,image)
+        .withArgs(title,description,target,deadline,image,video)
     })
     it('should write new campaign properly', async () => {
         let title = "Abrakadabra";
@@ -40,8 +40,8 @@ describe("FundFilm", function() {
         let target = ethers.utils.parseEther("50.0");
         let deadline = 1901052120;
         let image = "My New Campaign Image";
-
-        const tx = await contract.startCampaign(title,description,target,deadline,image)
+        let video = "My New Campaign Video";
+        const tx = await contract.startCampaign(title,description,target,deadline,image,video)
         await tx.wait();
 
         const newCampaign = await contract.campaigns(0);
@@ -50,6 +50,7 @@ describe("FundFilm", function() {
         expect(newCampaign.target).to.equal(target)
         expect(newCampaign.deadline).to.equal(deadline)
         expect(newCampaign.image).to.equal(image)
+        expect(newCampaign.video).to.equal(video)
     })
 
     it('should emit DonatedToCampaign event with proper args', async () => {
@@ -58,7 +59,8 @@ describe("FundFilm", function() {
         let target = ethers.utils.parseEther("50.0");
         let deadline = 1901052120;
         let image = "My New Campaign Image";
-        const tx = await contract.startCampaign(title,description,target,deadline,image)
+        let video = "My New Campaign Video";
+        const tx = await contract.startCampaign(title,description,target,deadline,image,video)
         await tx.wait();
 
         // donate from acc2
@@ -74,7 +76,8 @@ describe("FundFilm", function() {
         let target = ethers.utils.parseEther("50.0");
         let deadline = 1901052120;
         let image = "My New Campaign Image";
-        const tx = await contract.startCampaign(title,description,target,deadline,image)
+        let video = "My New Campaign Video";
+        const tx = await contract.startCampaign(title,description,target,deadline,image,video)
         await tx.wait();
         // donate from acc2
         let campaignId = 0
@@ -94,9 +97,9 @@ describe("FundFilm", function() {
         let description = "My New Campaign Description";
         let target = ethers.utils.parseEther("50.0");
         let deadline = Math.floor(Date.now() / 1000) + 15;
-        console.log(deadline)
         let image = "My New Campaign Image";
-        const tx = await contract.startCampaign(title,description,target,deadline,image)
+        let video = "My New Campaign Video";
+        const tx = await contract.startCampaign(title,description,target,deadline,image,video)
         await tx.wait();
         // donate from acc2
         let campaignId = 0
@@ -116,9 +119,9 @@ describe("FundFilm", function() {
         let description = "My New Campaign Description";
         let target = ethers.utils.parseEther("50.0");
         let deadline = Math.floor(Date.now() / 1000) + 20;
-        console.log(deadline)
         let image = "My New Campaign Image";
-        const tx = await contract.startCampaign(title,description,target,deadline,image)
+        let video = "My New Campaign Video";
+        const tx = await contract.startCampaign(title,description,target,deadline,image, video)
         await tx.wait();
         // donate from acc2
         let campaignId = 0
@@ -147,7 +150,8 @@ describe("FundFilm", function() {
         let target = ethers.utils.parseEther("50.0");
         let deadline = 1901052120;
         let image = "My New Campaign Image";
-        const tx = await contract.startCampaign(title,description,target,deadline,image)
+        let video = "My New Campaign Video";
+        const tx = await contract.startCampaign(title,description,target,deadline,image, video)
         await tx.wait();
         // donate from acc2
         let campaignId = 0
@@ -168,7 +172,8 @@ describe("FundFilm", function() {
         let deadline = Math.floor(Date.now() / 1000) + 30;
         console.log(deadline)
         let image = "My New Campaign Image";
-        const tx = await contract.startCampaign(title,description,target,deadline,image)
+        let video = "My New Campaign Video";
+        const tx = await contract.startCampaign(title,description,target,deadline,image, video)
         await tx.wait();
         // donate from acc2
         let campaignId = 0

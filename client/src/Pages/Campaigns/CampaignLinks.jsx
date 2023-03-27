@@ -8,7 +8,7 @@ const CampaignLinks = ({campaigns}) => {
     const navigate = useNavigate();
 
     const campaignsMappedAsLinks = campaigns?.map(campaign=>{
-        const {owner, campaignId, title, description, image, hasWithdrawn} = campaign;
+        const {owner, campaignId, title, description, video, image, hasWithdrawn} = campaign;
         const target = ethers.utils.formatEther(campaign.target);
         const amountCollected = ethers.utils.formatEther(campaign.amountCollected)
         const deadline = unixToDate(campaign.deadline)    
@@ -18,6 +18,7 @@ const CampaignLinks = ({campaigns}) => {
             <NavLink to={`/campaigns/${campaignId}`} key={campaignId}>
             <div className="campaign_title">{title}</div>
             <div className="campaign_description">{description}</div>
+            <div className="campaign_video">{video}</div>
 
             <div className="campaign_meta">
                 <div className="campaign_meta_item deadline">Deadline: {deadline}</div>
@@ -35,7 +36,7 @@ const CampaignLinks = ({campaigns}) => {
     })
     return ( 
         <>
-        {campaigns.length && campaignsMappedAsLinks}
+        {campaignsMappedAsLinks}
         </>
      );
 }

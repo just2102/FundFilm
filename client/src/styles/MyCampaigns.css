@@ -10,9 +10,3 @@
     background-color: rgb(225, 225, 225)
 }
 
-.form_error {
-    color:red;
-    font-size: smaller;
-    font-style: italic;
-    user-select: none;
-}
