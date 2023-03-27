@@ -21,6 +21,12 @@ const Campaigns = () => {
     const ongoingCampaigns = allCampaigns.filter(campaign=>{
         return campaign.hasWithdrawn === false;
     })
+
+    const [searchQuery, setSearchQuery] = useState("")
+    const filteredCampaigns = allCampaigns.filter(campaign=>{
+        return campaign.title.toLowerCase().includes(searchQuery.toLowerCase())
+    })
+
     useEffect(()=>{
         if (allCampaigns.length === 0) {
             dispatch(fetchCampaigns(contract))
@@ -37,13 +43,15 @@ const Campaigns = () => {
                 </div>
 
                 <div className="campaign_searchbar_item">
-                    <input type="search" />
+                    <input onChange={(e)=>setSearchQuery(e.target.value)} type="search" />
                 </div>
 
             </div>
-            {(showFinishedCampaigns && allCampaigns.length) && <CampaignLinks campaigns={allCampaigns}></CampaignLinks>}
+            {searchQuery && <CampaignLinks campaigns={filteredCampaigns}></CampaignLinks>}
 
-            {!showFinishedCampaigns && <CampaignLinks campaigns={ongoingCampaigns}></CampaignLinks> }
+            {(!searchQuery && showFinishedCampaigns && allCampaigns.length) && <CampaignLinks campaigns={allCampaigns}></CampaignLinks>}
+
+            {(!searchQuery && !showFinishedCampaigns) && <CampaignLinks campaigns={ongoingCampaigns}></CampaignLinks> }
 
         </div>
         </>
