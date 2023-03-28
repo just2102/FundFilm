@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import EthInput from "../common/EthInput";
 import ReactPlayer from "react-player";
 import { dateToUnix } from "../../utils/dateToUnix";
+import editIcon from "../../assets/edit.svg"
 
 const DonateModal = () => {
     const dispatch = useDispatch();
@@ -165,7 +166,7 @@ const EditModal = () => {
     return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="addCampaignModal">
-        <h3>Edit {campaign.title}</h3>
+        <h3>Edit "{campaign.title}"</h3>
             <div className="addCampaign_fieldColumn">
               <label htmlFor="title">New title</label>
               <input 
@@ -191,10 +192,11 @@ const EditModal = () => {
 
             <EthInput 
             label={"target"} 
-            message={"Campaign target"} 
+            message={"New target"} 
             register={register} 
             errors={errors}
-            balanceCheck={false}></EthInput>
+            balanceCheck={false}
+            defaultValue={ethers.utils.formatEther(campaign.target)}></EthInput>
 
             <div className="addCampaign_fieldColumn">
               <fieldset id="newCampaignImage">
@@ -294,6 +296,14 @@ const Campaign = ({isOwner}) => {
         setEditModalOpen(true);
     }
 
+    contract.on("CampaignDeadlineExtended", () => {
+        dispatch(fetchCampaignById({contract, campaignId}))
+        setExtendModalOpen(false)
+    })
+    contract.on("CampaignEdited", (campaignId, newCampaignData, event) => {
+        dispatch(fetchCampaignById({contract, campaignId}))
+        setEditModalOpen(false)
+    })
 
     useEffect(()=>{
         dispatch(fetchCampaignById({contract, campaignId}))
@@ -303,7 +313,7 @@ const Campaign = ({isOwner}) => {
         {!campaign && <Preloader/> }
         {campaign && 
         <div className="campaign">
-            <div className="campaign_title">{title} {isOwner && <button onClick={onEdit}>EDIT</button> }</div>
+            <div className="campaign_title"><h2>{title}</h2>{isOwner && <button onClick={onEdit}> <img src={editIcon} alt="" /> </button> }</div>
             <div className="campaign_description">{description}</div>
             <div className="campaign_image">{image && <img src={image} alt="image" />}</div>
             <div className="campaign_video">

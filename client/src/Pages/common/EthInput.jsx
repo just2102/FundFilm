@@ -1,4 +1,4 @@
-const EthInput = ({label, message, register, errors, currentBalance, balanceCheck }) => {
+const EthInput = ({label, message, register, errors, currentBalance, balanceCheck, defaultValue }) => {
   const validateBalance = (value) => {
     if (balanceCheck && value > currentBalance) {
       return "Insufficient funds";
@@ -10,6 +10,7 @@ const EthInput = ({label, message, register, errors, currentBalance, balanceChec
       <label htmlFor={label}>{message}</label>
       <div className="addCampaign_fieldRow">
         <input
+          defaultValue={defaultValue}
           {...register(`${label}`, {
             required: { value: true, message: "This field is required" },
             min: { value: 0.0049, message: "Should be at least 0.005" },

@@ -3,7 +3,7 @@ import "../styles/Profile.css"
 
 function Profile() {
   return (
-    <div className='profile'>My profileeeeeee</div>
+    <div className='profile'>My profile</div>
   )
 }
 

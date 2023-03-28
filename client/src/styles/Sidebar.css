@@ -1,4 +1,13 @@
+@font-face {
+    font-family: 'robotobold_condensed_italic';
+    src: url('../fonts/roboto-boldcondenseditalic-webfont.woff2') format('woff2'),
+         url('../fonts/roboto-boldcondenseditalic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
 .sidebar {
+    font-family: 'robotobold_condensed_italic';
     background: #1c1c24;
     border-radius: 20px;
     margin-top:12px;
@@ -21,8 +30,23 @@
 .sidebar img {
     padding:8px;
     transition: 200ms;
+    max-width:70px;
 }
 .sidebar img:hover {
     transform: scale(1.15);
+    cursor: pointer;
+}
+
+.sidebar button {
+    border-radius: 10px;
+    border: none;
+    background: #1c1c24;
+    color: white;
+    font-size: 1.2rem;
+    padding: 10px;
+    transition: 200ms;
+    width: 100%;
+    text-align: center;
+    outline: none;
     cursor: pointer;
 }

@@ -1,4 +1,13 @@
+@font-face {
+    font-family: 'robotobold_condensed_italic';
+    src: url('../fonts/roboto-boldcondenseditalic-webfont.woff2') format('woff2'),
+         url('../fonts/roboto-boldcondenseditalic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
 header {
+    font-family: 'robotobold_condensed_italic';
     grid-row: 1/2;
     grid-column: 2/3;
     display: flex;
@@ -9,14 +18,18 @@ header {
 }
 
 header a {
-    color:rgb(190, 190, 255);
+    /* color:rgb(190, 190, 255); */
+    transition: 200ms;
+    color:rgb(95, 175, 133);
 }
 header a:hover {
-    color:rgb(177, 255, 255);
+    /* color:rgb(177, 255, 255); */
+    color:rgb(143, 244, 190);
 }
 
 .active {
-    color:rgb(177, 255, 255);
+    /* color:rgb(177, 255, 255); */
+    color:rgb(143, 244, 190);
 }
 
 header span {

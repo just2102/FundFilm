@@ -8,6 +8,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import CampaignLink from "./CampaignLinks";
 import { Route, Routes } from "react-router-dom";
 import CampaignLinks from "./CampaignLinks";
+import searchIcon from "../../assets/search.svg"
 
 const Campaigns = () => {
     const contract = useSelector(state=>state.web3.contract);
@@ -28,6 +29,13 @@ const Campaigns = () => {
     })
     
 
+    // listen to CampaignStarted event and refetch campaigns
+    if (contract) {
+        contract.on("CampaignStarted", ()=>{
+        dispatch(fetchCampaigns(contract))
+    }) 
+    }
+
     useEffect(()=>{
         if (allCampaigns.length === 0) {
             dispatch(fetchCampaigns(contract))
@@ -44,7 +52,8 @@ const Campaigns = () => {
                 </div>
 
                 <div className="campaign_searchbar_item">
-                    <input onChange={(e)=>setSearchQuery(e.target.value)} type="search" />
+                    <input placeholder="Search..." id="search" onChange={(e)=>setSearchQuery(e.target.value)} type="search" />
+                    {/* <img id={"searchImg"} src={searchIcon} alt="" /> */}
                 </div>
 
             </div>

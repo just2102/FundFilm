@@ -8,6 +8,8 @@ import Profile from "./Pages/Profile";
 import MyCampaigns from "./Pages/MyCampaigns/MyCampaigns";
 import Campaigns from "./Pages/Campaigns/Campaigns";
 import Campaign from "./Pages/Campaigns/Campaign";
+import About from "./Pages/About/About";
+import Preloader from "./Pages/common/Preloader";
 
 function App() {
   return (
@@ -16,11 +18,13 @@ function App() {
         <Sidebar></Sidebar>
         <Header></Header>
         <Routes>
-          <Route path="profile" element={<Profile/>}></Route>
-          <Route path="campaigns" element={<Campaigns/>}></Route>
-          <Route path="/campaigns/:campaignId" element={<Campaign/>}></Route>
+          <Route loader={<Preloader/>} path="profile" element={<Profile/>}></Route>
+          <Route loader={<Preloader/>} path="campaigns" element={<Campaigns/>}></Route>
+          <Route loader={<Preloader/>} path="/campaigns/:campaignId" element={<Campaign/>}></Route>
 
-          <Route path="mycampaigns" element={<MyCampaigns/>}></Route>
+          <Route loader={<Preloader/>} path="mycampaigns" element={<MyCampaigns/>}></Route>
+
+          <Route loader={<Preloader/>} path="about" element={<About/>}></Route>
         </Routes>
       </div>
     </Provider>
