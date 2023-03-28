@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "yarn build && npx thirdweb@latest upload dist"
+    "deploy": "npm run build && git add dist -f && git commit -m \"add dist\" && git subtree push --prefix dist origin gh-pages"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
