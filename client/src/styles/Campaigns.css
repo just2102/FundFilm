@@ -67,6 +67,9 @@
   color: #555;
   margin-bottom: 8px;
 }
+.campaign_image_preview {
+  width:fit-content;
+}
 .campaign_image_preview img {
   width: 30%;
   height: 30%;

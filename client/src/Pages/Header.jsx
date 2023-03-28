@@ -11,11 +11,13 @@ import nightMode from "../assets/nightmode.svg"
 import logoutIcon from "../assets/logout.svg"
 import copyIcon from "../assets/copy.svg"
 import Snackbar from "@mui/material/Snackbar"
+import { useNavigate } from "react-router-dom";
 
 function Header() {
   const account = useSelector((state) => state.web3.account);
   const provider = useSelector((state) => state.web3.provider);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [isActive, setIsActive] = useState("dashboard");
 
@@ -45,6 +47,7 @@ function Header() {
         dispatch(setAccount(account));
         dispatch(setSigner(signer));
         dispatch(setContract(contract));
+        navigate("/campaigns")
       } else throw new Error("Metamask not found");
     } catch (error) {
       console.error(error);
