@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { disconnect, setAccount, setContract, setProvider, setSigner } from "../Redux/web3slice";
-import contractArtifact from "../../../web3/artifacts/contracts/FundFilm.sol/FundFilm.json"
+// import contractArtifact from "../../../web3/artifacts/contracts/FundFilm.sol/FundFilm.json"
+import contractArtifact from "../FundFilm.json"
 import { ethers } from "ethers";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
