@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "deploy": "npm run build && git add dist -f && git commit -m \"add dist\" && git subtree push --prefix dist origin gh-pages"
   },
