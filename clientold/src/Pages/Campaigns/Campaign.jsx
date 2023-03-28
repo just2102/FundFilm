@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import ethLogo from "../../assets/ethlogo.svg"
-import { donateToCampaign, editCampaign, extendDeadline, fetchCampaignById, withdrawFromCampaign } from "../../Redux/campaignSlice";
+import { donateToCampaign, extendDeadline, fetchCampaignById, withdrawFromCampaign } from "../../Redux/campaignSlice";
 import "../../styles/Campaigns.css"
 import { unixToDate } from "../../utils/unixToDate";
 import Preloader from "../common/Preloader";
@@ -97,8 +97,7 @@ const ExtendModal = () => {
     const {campaignId} = useParams()
     const onSubmit = async(data) => {
         const newDeadline = dateToUnix(data.newDeadline);
-        const costToExtend = ethers.utils.parseEther(expectedCost.toString());
-        const response = await dispatch(extendDeadline({contract, campaignId, newDeadline, costToExtend}))
+        const response = await dispatch(extendDeadline({contract, campaignId, newDeadline}))
         if (response.payload.error) {
             setBalanceError(response.payload.reason)
             return;
@@ -129,121 +128,10 @@ const ExtendModal = () => {
             <button disabled={isTransacting} 
             className={isTransacting ? 'button_disabled' : 'button_enabled'} 
             type="submit">Extend</button>
-            <span className="form_error">This transaction is not free! Service fee included (2% of the target)</span>
+            <span className="form_error">This transaction is not free! Service fee included</span>
             <span className="form_error">Expected cost: {expectedCost} ETH</span>
             {balanceError && <span className="form_error">{balanceError}</span>}
         </form>
-    </>
-    );
-}
-
-const EditModal = () => {
-    const dispatch = useDispatch();
-    const contract = useSelector(state=>state.web3.contract)
-    const account = useSelector(state=>state.web3.account)
-    const provider = useSelector(state=>state.web3.provider)
-    const isTransacting = useSelector(state=>state.campaigns.isTransacting)
-
-    const campaign = useSelector(state=>state.campaigns.currentlyDisplayedCampaign);
-
-    const { register, handleSubmit, watch, formState: { errors, balance } } = useForm();
-    const {campaignId} = useParams()
-    const [imageOption, setImageOption] = useState("link")
-    const onSubmit = async(data) => {
-        let {title, description, target, deadline, image, video} = data;
-        target = ethers.utils.parseEther(target);
-        deadline = Date.parse(deadline) / 1000;
-        const newCampaignData = {
-          title,
-          description,
-          target,
-          image,
-          video
-        }
-        dispatch(editCampaign({contract, campaignId, newCampaignData}))
-    }
-    return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)} className="addCampaignModal">
-        <h3>Edit {campaign.title}</h3>
-            <div className="addCampaign_fieldColumn">
-              <label htmlFor="title">New title</label>
-              <input 
-              defaultValue={campaign.title}
-              {...register("title", 
-              {required: {value:true, message: 'This field is required'},
-              maxLength: {value:40, message: "Title cannot be longer than 40 symbols"}})}
-              id="title" type="text" placeholder="Ascending..." />
-              {errors.title && <span className="form_error">{errors.title.message}</span>}
-            </div>
-
-            <div className="addCampaign_fieldColumn">
-              <label htmlFor="description">New description</label>
-              <textarea
-              defaultValue={campaign.description} cols={30} rows={10}
-              {...register("description", 
-              {required: {value:true, message: 'This field is required'},
-              minLength: {value:30, message: 'Please write at least 30 symbols'},
-              maxLength: {value:1000, message: "Description cannot be longer than 1000 symbols"}})} 
-              name="description" id="description"></textarea>
-              {errors.description && <span className="form_error">{errors.description.message}</span>}
-            </div>
-
-            <EthInput 
-            label={"target"} 
-            message={"Campaign target"} 
-            register={register} 
-            errors={errors}
-            balanceCheck={false}></EthInput>
-
-            <div className="addCampaign_fieldColumn">
-              <fieldset id="newCampaignImage">
-                <legend>Image options</legend>
-                {/* <input 
-                {...register("imageOption",)}
-                onClick={(e)=>{setImageOption(e.target.value)}}
-                id="uploadImage" type="radio"
-                name="imageOption" value="upload"
-                checked={imageOption==="upload"}
-                />
-                <label htmlFor="uploadImage">Upload (temporarily N/A)</label> */}
-
-                <input 
-                {...register("imageOption",)}
-                onClick={(e)=>{setImageOption(e.target.value)}}
-                id="linkImage" type="radio"
-                name="imageOption" value="link"
-                checked={imageOption==="link"}
-                />
-                <label htmlFor="linkImage">Link</label>
-
-                {imageOption==="upload" && 
-                <input
-                disabled
-                {...register("image")}
-                id="image" type="file" /> }
-
-                {imageOption==="link" &&
-                <input
-                defaultValue={campaign.image}
-                {...register("image")}
-                id="image" type="text" placeholder="https://..." /> }
-              </fieldset>
-              {errors.image && <span className="form_error">{errors.image.message}</span>}
-            </div>
-
-            <div className="addCampaign_fieldColumn">
-              <label htmlFor="video">Teaser link (optional)</label>
-              <input
-              defaultValue={campaign.video}
-              {...register("video")}
-              id="video" type="text" />
-            </div>
-            {isTransacting && <Preloader/>}
-            <button disabled={isTransacting} 
-            className={isTransacting ? 'button_disabled' : 'button_enabled'} 
-            type="submit">Edit!</button>
-      </form>
     </>
     );
 }
@@ -289,11 +177,6 @@ const Campaign = ({isOwner}) => {
         setExtendModalOpen(true);
     }
 
-    const [editModalOpen, setEditModalOpen] = useState(false);
-    const onEdit = () => {
-        setEditModalOpen(true);
-    }
-
 
     useEffect(()=>{
         dispatch(fetchCampaignById({contract, campaignId}))
@@ -303,7 +186,7 @@ const Campaign = ({isOwner}) => {
         {!campaign && <Preloader/> }
         {campaign && 
         <div className="campaign">
-            <div className="campaign_title">{title} {isOwner && <button onClick={onEdit}>EDIT</button> }</div>
+            <div className="campaign_title">{title}</div>
             <div className="campaign_description">{description}</div>
             <div className="campaign_image">{image && <img src={image} alt="image" />}</div>
             <div className="campaign_video">
@@ -341,13 +224,6 @@ const Campaign = ({isOwner}) => {
         isOpen={extendModalOpen}
         onRequestClose={()=>setExtendModalOpen(false)}>
             <ExtendModal/>
-        </Modal>
-
-        <Modal
-        style={customStyles}
-        isOpen={editModalOpen}
-        onRequestClose={()=>setEditModalOpen(false)}>
-            <EditModal/>
         </Modal>
     </>
     );

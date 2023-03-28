@@ -133,33 +133,10 @@ export const startCampaign = createAsyncThunk(
 
 export const extendDeadline = createAsyncThunk(
     "extendDeadline",
-    async ({contract, campaignId, newDeadline, costToExtend}, {dispatch}) => {
+    async ({contract, campaignId, newDeadline}, {dispatch}) => {
       dispatch(toggleIsTransacting())
       try {
-        const tx = await contract.extendDeadline(campaignId, newDeadline, {value: costToExtend});
-        const receipt = await tx.wait();
-        console.log(receipt)
-        if (receipt.status === 1) {
-          dispatch(fetchCampaignById({contract, campaignId}))
-        }
-      } catch (error) {
-        return error
-      } finally{
-        dispatch(toggleIsTransacting())
-      }
-    }
-)
-
-
-export const editCampaign = createAsyncThunk(
-    "editCampaign",
-    async ({contract, campaignId, newCampaignData}, {dispatch}) => {
-      dispatch(toggleIsTransacting())
-      const {title, description, target, image, video} = newCampaignData;
-      try {
-        console.log(title)
-        console.log(video)
-        const tx = await contract.editCampaign(campaignId, title, description, target, image, video);
+        const tx = await contract.extendDeadline(campaignId, newDeadline);
         const receipt = await tx.wait();
         console.log(receipt)
         if (receipt.status === 1) {
