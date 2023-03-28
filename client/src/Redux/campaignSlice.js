@@ -6,27 +6,32 @@ const initialState = {
   myCampaigns: [],
 
   isFetching: false,
-  isAddingCampaign: false,
-  isDonating: false
-
+  isStartingCampaign: false,
+  isDonating: false,
+  isWithdrawing: false,
+  isTransacting: false
 };
 
 export const fetchCampaigns = createAsyncThunk(
     "fetchCampaigns",
     async (contract, {dispatch}) => {
       dispatch(toggleIsFetching())
-
-      const numberOfCampaigns = await contract.numberOfCampaigns();
-      const campaignsData = [];
-      for (let i = 0; i < numberOfCampaigns; i++) {
-        let campaign = await contract.campaigns(i);
-        campaignsData.push(campaign);
+      try {
+        const numberOfCampaigns = await contract.numberOfCampaigns();
+        const campaignsData = [];
+        for (let i = 0; i < numberOfCampaigns; i++) {
+          let campaign = await contract.campaigns(i);
+          campaignsData.push(campaign);
+        }
+        if (campaignsData.length > 0) {
+          dispatch(setCampaigns(campaignsData))
+        }
       }
-      if (campaignsData.length > 0) {
-        dispatch(setCampaigns(campaignsData))
+      catch (error) {
+        console.error(error);
+      } finally {
+        dispatch(toggleIsFetching())
       }
-      
-      dispatch(toggleIsFetching())
     }
 )
 
@@ -34,19 +39,23 @@ export const fetchMyCampaigns = createAsyncThunk(
   "fetchMyCampaigns",
   async ({contract, account}, {dispatch}) => {
     dispatch(toggleIsFetching())
-
-    const numberOfCampaigns = await contract.numberOfCampaigns();
-    const myCampaignsData = [];
-    for (let i = 0; i < numberOfCampaigns; i++) {
-      let campaign = await contract.campaigns(i);
-      if (campaign.owner === account) {
-        myCampaignsData.push(campaign);
+    try {
+      const numberOfCampaigns = await contract.numberOfCampaigns();
+      const myCampaignsData = [];
+      for (let i = 0; i < numberOfCampaigns; i++) {
+        let campaign = await contract.campaigns(i);
+        if (campaign.owner === account) {
+          myCampaignsData.push(campaign);
+        }
       }
+      if (myCampaignsData.length > 0) {
+        dispatch(setMyCampaigns(myCampaignsData))
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      dispatch(toggleIsFetching())
     }
-    if (myCampaignsData.length > 0) {
-      dispatch(setMyCampaigns(myCampaignsData))
-    }
-    dispatch(toggleIsFetching())
   }
 )
 
@@ -54,11 +63,16 @@ export const fetchCampaignById = createAsyncThunk(
     "fetchCampaignById",
     async ({contract,campaignId}, {dispatch}) => {
       dispatch(toggleIsFetching())
-      const campaign = await contract.campaigns(campaignId);
-      if (campaign) {
-        dispatch(setCurrentlyDisplayedCampaign(campaign))
+      try {
+        const campaign = await contract.campaigns(campaignId);
+        if (campaign) {
+          dispatch(setCurrentlyDisplayedCampaign(campaign))
+        }
+      } catch (error) {
+        console.error(error)
+      } finally{
+        dispatch(toggleIsFetching())
       }
-      dispatch(toggleIsFetching())
     }
 )
 
@@ -76,6 +90,62 @@ export const donateToCampaign = createAsyncThunk(
         console.error(error)
       } finally{
         dispatch(toggleIsDonating())
+      }
+    }
+)
+
+export const withdrawFromCampaign = createAsyncThunk(
+    "withdrawFromCampaign",
+    async ({contract, campaignId}, {dispatch}) => {
+      dispatch(toggleIsWithdrawing())
+      try {
+        const tx = await contract.withdrawFromCampaign(campaignId);
+        const receipt = await tx.wait();
+        if (receipt.status === 1) {
+          dispatch(fetchCampaignById({contract, campaignId}))
+        }
+      } catch (error) {
+        return error
+      } finally{
+        dispatch(toggleIsWithdrawing())
+      }
+    }
+)
+
+export const startCampaign = createAsyncThunk(
+    "startCampaign",
+    async ({contract, campaignToAdd}, {dispatch}) => {
+      dispatch(toggleIsStartingCampaign())
+      const {title, description, target, deadline, image, video} = campaignToAdd;
+      try {
+        const tx = await contract.startCampaign(title,description,target,deadline,image,video)
+        const receipt = await tx.wait();
+        if (receipt.status === 1) {
+          dispatch(fetchCampaigns(contract))
+        }
+      } catch (error) {
+        return error
+      } finally{
+        dispatch(toggleIsStartingCampaign())
+      }
+    }
+)
+
+export const extendDeadline = createAsyncThunk(
+    "extendDeadline",
+    async ({contract, campaignId, newDeadline}, {dispatch}) => {
+      dispatch(toggleIsTransacting())
+      try {
+        const tx = await contract.extendDeadline(campaignId, newDeadline);
+        const receipt = await tx.wait();
+        console.log(receipt)
+        if (receipt.status === 1) {
+          dispatch(fetchCampaignById({contract, campaignId}))
+        }
+      } catch (error) {
+        return error
+      } finally{
+        dispatch(toggleIsTransacting())
       }
     }
 )
@@ -100,12 +170,24 @@ export const campaignSlice = createSlice({
     toggleIsDonating: (state) => {
         state.isDonating = !state.isDonating
     },
-    toggleIsAddingCampaign: (state) => {
-        state.isAddingCampaign = !state.isAddingCampaign
+    toggleIsStartingCampaign: (state) => {
+        state.isStartingCampaign = !state.isStartingCampaign
+    },
+    toggleIsWithdrawing: (state) => {
+      state.isWithdrawing = !state.isWithdrawing
+    },
+    toggleIsTransacting: (state) => {
+      state.isTransacting = !state.isTransacting
     }
   },
 });
 
-export const {setCampaigns, setCurrentlyDisplayedCampaign, setMyCampaigns, toggleIsFetching, toggleIsDonating, toggleIsAddingCampaign } = campaignSlice.actions;
+export const {setCampaigns, 
+  setCurrentlyDisplayedCampaign, 
+  setMyCampaigns, toggleIsFetching, 
+  toggleIsDonating, 
+  toggleIsStartingCampaign,
+  toggleIsWithdrawing,
+  toggleIsTransacting } = campaignSlice.actions;
 
 export default campaignSlice.reducer

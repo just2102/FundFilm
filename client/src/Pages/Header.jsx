@@ -39,7 +39,7 @@ function Header() {
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = web3Provider.getSigner();
         const account = await signer.getAddress();
-        const contract = new ethers.Contract("0x7F714Dc84907DAC784F36e02b349bfE260a4AD39", contractArtifact.abi, signer)
+        const contract = new ethers.Contract("0xC85e2cDE16bdaC9eb3c3AA0fDa4A67a4a78CD5E0", contractArtifact.abi, signer)
         dispatch(setProvider(web3Provider));
         dispatch(setAccount(account));
         dispatch(setSigner(signer));

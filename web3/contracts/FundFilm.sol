@@ -5,6 +5,7 @@ pragma solidity ^0.8.18;
 contract FundFilm {
     address payable public platformOwner;
     uint256 public numberOfCampaigns = 0;
+    uint256 public CAMPAIGNS_VALUE_LOCKED;
     uint256 public constant WITHDRAWAL_FEE = 10;
     uint256 public constant SERVICE_FEE = 2;
 
@@ -77,17 +78,25 @@ contract FundFilm {
         campaign.video = _video;
         emit CampaignEdited(_title, _description, _target, _image, _video);
     }
-
-    function extendDeadline(uint256 _id, uint256 _newDeadline) public {
+    
+    modifier campaignHasNotEnded(uint256 _campaignId) {
+        require(
+            campaigns[_campaignId].hasWithdrawn == false
+            && campaigns[_campaignId].deadline > block.timestamp
+            , "Campaign has already finished");
+        _;
+    }
+    event CampaignDeadlineExtended(uint256 _id, uint256 _newDeadline, uint256 feePaid);
+    function extendDeadline(uint256 _id, uint256 _newDeadline) campaignHasNotEnded(_id)  public payable {
         // extending a deadline should cost 2% of the target
         Campaign storage campaign = campaigns[_id];
         require(msg.sender == campaign.owner,"Only campaign owners can extend the deadline of their campaigns!");
-        require(_newDeadline > campaign.deadline,"New deadline should be in the future");
+        require(_newDeadline > campaign.deadline,"New deadline should be later than the current one");
         // transfer 2% of target to contract address
         uint256 fee = (campaign.target * SERVICE_FEE) / 100;
-        (bool sent, ) = address(this).call{value: fee}("");
-        require(sent, "Failed to pay service fee");
+        require(msg.value == fee, "Service fee not provided or insufficient (should equal to 2% of the campaign's target");
         campaign.deadline = _newDeadline;
+        emit CampaignDeadlineExtended(_id, _newDeadline, fee);
     }
 
     event DonatedToCampaign(address donator, uint256 _campaignId, uint256 _amount);
@@ -98,6 +107,7 @@ contract FundFilm {
         campaign.donations.push(msg.value);
 
         campaign.amountCollected += msg.value;
+        CAMPAIGNS_VALUE_LOCKED += msg.value;
         emit DonatedToCampaign(msg.sender, _id, msg.value);
     }
     function getDonators(uint256 _id) view public returns(address[] memory, uint256[] memory) {
@@ -105,11 +115,16 @@ contract FundFilm {
     }
 
     modifier onlyCampaignOwner(uint256 _campaignId) {
-        require(msg.sender == campaigns[_campaignId].owner,"Only campaign owners can withdraw from campaigns!");
+        require(msg.sender == campaigns[_campaignId].owner,"Only campaign owners can call this function!");
         _;
     }
     modifier campaignHasEnded(uint256 _campaignId) {
-        require(campaigns[_campaignId].deadline <= block.timestamp,"Campaign hasn't ended yet");
+        // a campaign is considered as 'finished' if one of the conditions is true:
+        require(
+        campaigns[_campaignId].deadline <= block.timestamp
+        || 
+        campaigns[_campaignId].amountCollected >= campaigns[_campaignId].target 
+        ,"Campaign hasn't ended yet");
         _;
     }
     event WithdrewFromCampaign(uint256 _campaignId, address _owner,uint256 _amountWithdrawn);
@@ -120,6 +135,7 @@ contract FundFilm {
         payable(campaign.owner).transfer(sumAfterFee);
 
         campaign.hasWithdrawn = true;
+        CAMPAIGNS_VALUE_LOCKED -= campaign.amountCollected;
         emit WithdrewFromCampaign(_campaignId, campaign.owner, sumAfterFee);
     }
 
@@ -128,7 +144,9 @@ contract FundFilm {
         _;
     }
     function withdrawServiceFees() onlyPlatformOwner public {
-        (bool sent, ) = platformOwner.call{value: address(this).balance}("");
+        // withdraw all the contract balance excluding the campaigns' locked funds
+        uint256 amountToWithdraw = address(this).balance - ((CAMPAIGNS_VALUE_LOCKED * (100 - WITHDRAWAL_FEE)) / 100);
+        (bool sent, ) = platformOwner.call{value: amountToWithdraw}("");
         require(sent, "Failed to withdraw");
     }
 }
