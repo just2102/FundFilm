@@ -22,7 +22,9 @@ const CampaignLinks = ({campaigns}) => {
             <div className="campaign_image_preview"><img src={image} alt="image" /></div>
             </NavLink>
             <div className="campaign_meta">
-                <div className="campaign_meta_item deadline">Deadline: {deadline}</div>
+               {hasWithdrawn 
+               ? <div className="campaign_meta_item deadline">Finished</div>
+               : <div className="campaign_meta_item deadline">Deadline: {deadline}</div> }
                 <div className="campaign_meta_item target">Target: {target} <img id="ethlogo" src={ethLogo} alt="eth" /></div>
                 <div className="campaign_meta_item raised">Raised: {amountCollected} <img id="ethlogo" src={ethLogo} alt="eth" /> </div>
             </div>

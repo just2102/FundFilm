@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCampaigns } from "../../Redux/campaignSlice";
+import { fetchCampaignById, fetchCampaigns } from "../../Redux/campaignSlice";
 import Campaign from "./Campaign";
 import "../../styles/Campaigns.css"
 import Preloader from "../common/Preloader";
@@ -28,12 +28,33 @@ const Campaigns = () => {
         return campaign.title.toLowerCase().includes(searchQuery.toLowerCase())
     })
     
-
-    // listen to CampaignStarted event and refetch campaigns
     if (contract) {
-        contract.on("CampaignStarted", ()=>{
+        contract.on("CampaignStarted", (owner, campaignId, title, description, target, deadline, image, video)=>{
         dispatch(fetchCampaigns(contract))
     }) 
+    }
+    if (contract) {
+        // TODO: CampaignEdited should emit the campaignId too
+        contract.on("CampaignEdited", (title, description, target, image, video)=>{
+        dispatch(fetchCampaigns(contract))
+    })
+    }
+    if (contract) {
+        contract.on("WithdrewFromCampaign", (campaignId, owner, amountWithdrawn)=>{
+        dispatch(fetchCampaignById(contract, campaignId))
+    })
+    }
+    if (contract) {
+        // listen to DonatedToCampaign event and refetch the campaign that was donated to
+        contract.on("DonatedToCampaign", (donator, campaignId, amount)=>{
+        dispatch(fetchCampaignById(contract, campaignId))
+    })
+    }
+    if (contract) {
+        // listen to CampaignDeadlineExtended event and refetch the campaign that was extended
+        contract.on("CampaignDeadlineExtended", (campaignId, newDeadline, feePaid)=>{
+        dispatch(fetchCampaignById(contract, campaignId))
+    })
     }
 
     useEffect(()=>{

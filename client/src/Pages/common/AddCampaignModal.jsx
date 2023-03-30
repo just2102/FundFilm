@@ -24,6 +24,8 @@ function AddCampaignModal() {
     }
 
     const [imageOption, setImageOption] = useState("link")
+
+    const [addCampaignError, setAddCampaignError] = useState(null)
     const onSubmit = async(data) => {
         let {title, description, target, deadline, image, video} = data;
         target = ethers.utils.parseEther(target);
@@ -37,6 +39,10 @@ function AddCampaignModal() {
           video
         }
         const response = await dispatch(startCampaign({contract,campaignToAdd}))
+        console.log(response)
+        if (response.payload.error) {
+          setAddCampaignError(response.payload.reason)
+        }
         if (response.payload) {
           dispatch(fetchMyCampaigns({contract, account}))
         }
@@ -132,6 +138,8 @@ function AddCampaignModal() {
               id="video" type="text" />
             </div>
             {isStartingCampaign && <Preloader/>}
+
+            {addCampaignError && <span className="form_error">{addCampaignError}</span>}
             <button disabled={isStartingCampaign} 
             className={isStartingCampaign ? 'button_disabled' : 'button_enabled'} 
             type="submit">Start!</button>
