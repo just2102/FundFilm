@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { setCampaigns, setCurrentlyDisplayedCampaign, setMyCampaigns } from "./campaignSlice";
 
 const initialState = {
   account: null,
@@ -9,6 +10,16 @@ const initialState = {
   contract: null,
   transactions: [],
 };
+
+export const disconnectRequest = createAsyncThunk(
+  "web3/disconnect",
+  async (_,{dispatch}) => {
+    dispatch(disconnectWallet())
+    dispatch(setCampaigns([]))
+    dispatch(setCurrentlyDisplayedCampaign(null))
+    dispatch(setMyCampaigns([]))
+  }
+)
 
 export const web3Slice = createSlice({
   name: "web3",
@@ -35,7 +46,7 @@ export const web3Slice = createSlice({
     addTransaction: (state, action) => {
       state.transactions.push(action.payload);
     },
-    disconnect: (state) => {
+    disconnectWallet: (state) => {
       state.account = initialState.account;
       state.balance = initialState.balance;
       state.contract = initialState.contract;
@@ -47,6 +58,6 @@ export const web3Slice = createSlice({
   },
 });
 
-export const { setAccount, setSigner, setBalance, setNetwork, setProvider, setContract, addTransaction, disconnect } = web3Slice.actions;
+export const { setAccount, setSigner, setBalance, setNetwork, setProvider, setContract, addTransaction, disconnectWallet } = web3Slice.actions;
 
 export default web3Slice.reducer

@@ -1,17 +1,26 @@
 import { useSelector, useDispatch } from "react-redux";
-import { disconnect, setAccount, setContract, setProvider, setSigner } from "../Redux/web3slice";
+import {
+  disconnectRequest,
+  setAccount,
+  setContract,
+  setProvider,
+  setSigner,
+} from "../Redux/web3slice";
 // import contractArtifact from "../../../web3/artifacts/contracts/FundFilm.sol/FundFilm.json"
-import contractArtifact from "../FundFilm.json"
+import contractArtifact from "../FundFilm.json";
 import { ethers } from "ethers";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import "../styles/Header.css"
-import arrowDownConnected from "../assets/arrowdown-connected.svg"
-import nightMode from "../assets/nightmode.svg"
-import logoutIcon from "../assets/logout.svg"
-import copyIcon from "../assets/copy.svg"
-import Snackbar from "@mui/material/Snackbar"
+import "../styles/Header.css";
+import arrowDownConnected from "../assets/arrowdown-connected.svg";
+import arrowDown from "../assets/arrowdown.svg";
+import nightMode from "../assets/nightmode.svg";
+import logoutIcon from "../assets/logout.svg";
+import copyIcon from "../assets/copy.svg";
+import Snackbar from "@mui/material/Snackbar";
 import { useNavigate } from "react-router-dom";
+import Modal from "react-modal";
+Modal.setAppElement("#root");
 
 function Header() {
   const account = useSelector((state) => state.web3.account);
@@ -21,19 +30,48 @@ function Header() {
 
   const [isActive, setIsActive] = useState("dashboard");
 
-  const [toggleDrawer, setToggleDrawer] = useState(false)
-  const [copySnackbarOpen, setCopySnackbarOpen] = useState(false)
+  const [toggleDrawer, setToggleDrawer] = useState(false);
+  const [copySnackbarOpen, setCopySnackbarOpen] = useState(false);
 
   const handleCopy = () => {
     setCopySnackbarOpen(true);
-    navigator.clipboard.writeText(account)
-  }
-  const handleDisconnect = () => {
-    dispatch(disconnect());
-  }
+    navigator.clipboard.writeText(account);
+  };
+  const handleDisconnect = async() => {
+    await dispatch(disconnectRequest());
+  };
 
   const [isConnecting, setIsConnecting] = useState(false);
-
+  const [networkModalOpen, setNetworkModalOpen] = useState(false);
+  const handleNetworkModalOpen = async() => {
+    const currentlySelectedNetwork = await window.ethereum.networkVersion;
+    if (currentlySelectedNetwork === '137') {
+      setChosenNetwork(networks.polygon)
+    }
+    if (currentlySelectedNetwork === '11155111') {
+      setChosenNetwork(networks.sepolia)
+    }
+    setNetworkModalOpen(true)
+  }
+  const [chosenNetwork, setChosenNetwork] = useState(null);
+  const networks = {
+    sepolia: "0xC85e2cDE16bdaC9eb3c3AA0fDa4A67a4a78CD5E0",
+    polygon: "0xe46769D112F2dED16e9fc46F62014d44f1D6b686",
+  };
+  const handleSelectNetwork = async (network) => {
+    if (network === networks.polygon) {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x89" }],
+      });
+    } else if (network === networks.sepolia) {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0xaa36a7" }],
+      });
+    }
+    setChosenNetwork(network);
+  };
   const handleConnectWallet = async () => {
     try {
       setIsConnecting(true);
@@ -42,61 +80,125 @@ function Header() {
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = web3Provider.getSigner();
         const account = await signer.getAddress();
-        const contract = new ethers.Contract("0xC85e2cDE16bdaC9eb3c3AA0fDa4A67a4a78CD5E0", contractArtifact.abi, signer)
+        const contract = new ethers.Contract(
+          chosenNetwork,
+          contractArtifact.abi,
+          signer
+        );
         dispatch(setProvider(web3Provider));
         dispatch(setAccount(account));
         dispatch(setSigner(signer));
         dispatch(setContract(contract));
-        navigate("/campaigns")
+        navigate("/campaigns");
       } else throw new Error("Metamask not found");
     } catch (error) {
       console.error(error);
     } finally {
       setIsConnecting(false);
+      setNetworkModalOpen(false);
     }
   };
 
   function sliceAddress(address) {
-    const first = address.substring(0,4)
-    const second = "..."
-    const third = address.substring(address.length-4)
-    return first+second+third
+    const first = address.substring(0, 4);
+    const second = "...";
+    const third = address.substring(address.length - 4);
+    return first + second + third;
   }
 
   return (
     <header>
       <Snackbar
-      anchorOrigin={{ vertical:'top', horizontal:'right' }}
-      open={copySnackbarOpen}
-      autoHideDuration={1500}
-      onClose={()=>setCopySnackbarOpen(false)}
-      message="Address copied"></Snackbar>
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={copySnackbarOpen}
+        autoHideDuration={1500}
+        onClose={() => setCopySnackbarOpen(false)}
+        message="Address copied"
+      ></Snackbar>
       <NavLink to={"/campaigns"}>Campaigns</NavLink>
       <NavLink to={"/mycampaigns"}>My Campaigns</NavLink>
       <NavLink to={"/about"}>About</NavLink>
       {account ? (
-        <span onClick={()=>setToggleDrawer(!toggleDrawer)}>{sliceAddress(account)} 
-          <img src={arrowDownConnected} alt="arrowDown" />
-          {toggleDrawer && 
-            <div className="drawer">
-              <div onClick={handleCopy} className="drawer_action copy">
-                <img src={copyIcon} alt="copyAddress" />
-                <span>Copy</span>
-              </div>
+        <>
+          <span onClick={() => setToggleDrawer(!toggleDrawer)}>
+            {sliceAddress(account)}
+            <img src={arrowDownConnected} alt="arrowDown" />
+            {toggleDrawer && (
+              <div className="drawer">
+                <div onClick={handleCopy} className="drawer_action copy">
+                  <img src={copyIcon} alt="copyAddress" />
+                  <span>Copy</span>
+                </div>
 
-              <div onClick={handleDisconnect} className="drawer_action logout">
-                <img src={logoutIcon} alt="logout" />
-                <span>Disconnect</span>
+                <div
+                  onClick={handleDisconnect}
+                  className="drawer_action logout"
+                >
+                  <img src={logoutIcon} alt="logout" />
+                  <span>Disconnect</span>
+                </div>
               </div>
-            </div> }
-        </span>
+            )}
+          </span>
+        </>
       ) : (
-        <button disabled={isConnecting} onClick={handleConnectWallet}>
-          {isConnecting ? "Connecting..." : "Connect Wallet"}
-        </button>
+        <>
+          <button
+            disabled={isConnecting}
+            onClick={handleNetworkModalOpen}
+          >
+            {isConnecting ? "Connecting..." : "Connect Wallet"}
+          </button>
+          <Modal onRequestClose={()=>setNetworkModalOpen(false)} style={customStyles} isOpen={networkModalOpen}>
+            <div className="networkModal">
+              <h2>Choose a network</h2>
+              <div className="networks">
+                <div onClick={() => handleSelectNetwork(networks.sepolia)}>
+                  <span
+                    id={
+                      chosenNetwork === "0xC85e2cDE16bdaC9eb3c3AA0fDa4A67a4a78CD5E0"
+                        ? "chosen"
+                        : ""
+                    }
+                  >
+                    Sepolia (testnet)
+                  </span>
+                </div>
+                <div onClick={() => handleSelectNetwork(networks.polygon)}>
+                  <span
+                    id={
+                      chosenNetwork === "0xe46769D112F2dED16e9fc46F62014d44f1D6b686" ? "chosen" : ""
+                    }
+                  >
+                    Polygon (mainnet)
+                  </span>
+                </div>
+              </div>
+              <button onClick={handleConnectWallet}>Connect</button>
+            </div>
+          </Modal>
+        </>
       )}
     </header>
   );
 }
+
+const customStyles = {
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    overflow: "auto",
+    maxHeight: "70vh",
+    backgroundColor: "#101010",
+    color: "white",
+  },
+};
 
 export default Header;

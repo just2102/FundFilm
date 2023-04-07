@@ -75,3 +75,36 @@ header span:hover {
     font-size: small;
     font-style: italic;
 }
+
+.networkModal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.networkModal .networks {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.networkModal .networks span {
+    font-size: small;
+    font-style: italic;
+    background-color: rgb(41, 39, 39);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    transition: 200ms;
+}
+
+.networkModal .networks span:hover {
+    cursor: pointer;
+    background-color: rgb(95, 175, 133);
+}
+
+#chosen {
+    background-color: rgb(95, 175, 133) !important;
+}
