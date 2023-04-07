@@ -52,9 +52,14 @@ body {
 }
 
 
+#currencyLogo {
+  width: 1.3rem;
+  margin-right: 0.5rem;
+}
 #ethlogo {
   width:0.5rem;
 }
+
 
 button {
   /* background-color: #2c2b2b;

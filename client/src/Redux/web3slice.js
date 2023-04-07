@@ -9,6 +9,8 @@ const initialState = {
   provider: null,
   contract: null,
   transactions: [],
+
+  currency: null
 };
 
 export const disconnectRequest = createAsyncThunk(
@@ -46,6 +48,9 @@ export const web3Slice = createSlice({
     addTransaction: (state, action) => {
       state.transactions.push(action.payload);
     },
+    setCurrency: (state,action) => {
+      state.currency = action.payload;
+    },
     disconnectWallet: (state) => {
       state.account = initialState.account;
       state.balance = initialState.balance;
@@ -58,6 +63,6 @@ export const web3Slice = createSlice({
   },
 });
 
-export const { setAccount, setSigner, setBalance, setNetwork, setProvider, setContract, addTransaction, disconnectWallet } = web3Slice.actions;
+export const { setAccount, setSigner, setBalance, setNetwork, setProvider, setContract, addTransaction, setCurrency, disconnectWallet } = web3Slice.actions;
 
 export default web3Slice.reducer

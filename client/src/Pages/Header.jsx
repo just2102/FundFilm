@@ -3,6 +3,8 @@ import {
   disconnectRequest,
   setAccount,
   setContract,
+  setCurrency,
+  setNetwork,
   setProvider,
   setSigner,
 } from "../Redux/web3slice";
@@ -37,22 +39,22 @@ function Header() {
     setCopySnackbarOpen(true);
     navigator.clipboard.writeText(account);
   };
-  const handleDisconnect = async() => {
+  const handleDisconnect = async () => {
     await dispatch(disconnectRequest());
   };
 
   const [isConnecting, setIsConnecting] = useState(false);
   const [networkModalOpen, setNetworkModalOpen] = useState(false);
-  const handleNetworkModalOpen = async() => {
+  const handleNetworkModalOpen = async () => {
     const currentlySelectedNetwork = await window.ethereum.networkVersion;
-    if (currentlySelectedNetwork === '137') {
-      setChosenNetwork(networks.polygon)
+    if (currentlySelectedNetwork === "137") {
+      setChosenNetwork(networks.polygon);
     }
-    if (currentlySelectedNetwork === '11155111') {
-      setChosenNetwork(networks.sepolia)
+    if (currentlySelectedNetwork === "11155111") {
+      setChosenNetwork(networks.sepolia);
     }
-    setNetworkModalOpen(true)
-  }
+    setNetworkModalOpen(true);
+  };
   const [chosenNetwork, setChosenNetwork] = useState(null);
   const networks = {
     sepolia: "0xC85e2cDE16bdaC9eb3c3AA0fDa4A67a4a78CD5E0",
@@ -60,15 +62,53 @@ function Header() {
   };
   const handleSelectNetwork = async (network) => {
     if (network === networks.polygon) {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0x89" }],
-      });
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "0x89" }],
+        });
+      } catch (error) {
+        if (error.code === 4902) {
+          try {
+            await window.ethereum.request({
+              method: "wallet_addEthereumChain",
+              params: [{
+                chainId: "0x89", 
+                chainName: "Polygon Mainnet",
+                nativeCurrency: {name: "MATIC", symbol: "MATIC", decimals: 18},
+                rpcUrls: ["https://polygon-rpc.com/"],
+                blockExplorerUrls: ["https://polygonscan.com/"]}],
+            });
+          } catch (addError) {
+            console.error(addError);
+          }
+        }
+        console.error(error)
+      }
     } else if (network === networks.sepolia) {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0xaa36a7" }],
-      });
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "0xaa36a7" }],
+        });
+      } catch (error) {
+        if (error.code === 4902) {
+          try {
+            await window.ethereum.request({
+              method: "wallet_addEthereumChain",
+              params: [{
+                chainId: "0xaa36a7", 
+                chainName: "Sepolia",
+                nativeCurrency: {name: "ETH", symbol: "ETH", decimals: 18},
+                rpcUrls: ["https://rpc.sepolia.org/"],
+                blockExplorerUrls: ["https://explorer.sepolia.org/"]}],
+            });
+          } catch (addError) {
+            console.error(addError);
+          }
+        }
+        console.error(error)
+      }
     }
     setChosenNetwork(network);
   };
@@ -88,6 +128,8 @@ function Header() {
         dispatch(setProvider(web3Provider));
         dispatch(setAccount(account));
         dispatch(setSigner(signer));
+        dispatch(setNetwork(chosenNetwork===networks.polygon?"POLYGON":"SEPOLIA"))
+        dispatch(setCurrency(chosenNetwork===networks.polygon?"MATIC":"ETH"))
         dispatch(setContract(contract));
         navigate("/campaigns");
       } else throw new Error("Metamask not found");
@@ -143,20 +185,22 @@ function Header() {
         </>
       ) : (
         <>
-          <button
-            disabled={isConnecting}
-            onClick={handleNetworkModalOpen}
-          >
+          <button disabled={isConnecting} onClick={handleNetworkModalOpen}>
             {isConnecting ? "Connecting..." : "Connect Wallet"}
           </button>
-          <Modal onRequestClose={()=>setNetworkModalOpen(false)} style={customStyles} isOpen={networkModalOpen}>
+          <Modal
+            onRequestClose={() => setNetworkModalOpen(false)}
+            style={customStyles}
+            isOpen={networkModalOpen}
+          >
             <div className="networkModal">
               <h2>Choose a network</h2>
               <div className="networks">
                 <div onClick={() => handleSelectNetwork(networks.sepolia)}>
                   <span
                     id={
-                      chosenNetwork === "0xC85e2cDE16bdaC9eb3c3AA0fDa4A67a4a78CD5E0"
+                      chosenNetwork ===
+                      "0xC85e2cDE16bdaC9eb3c3AA0fDa4A67a4a78CD5E0"
                         ? "chosen"
                         : ""
                     }
@@ -167,14 +211,23 @@ function Header() {
                 <div onClick={() => handleSelectNetwork(networks.polygon)}>
                   <span
                     id={
-                      chosenNetwork === "0xe46769D112F2dED16e9fc46F62014d44f1D6b686" ? "chosen" : ""
+                      chosenNetwork ===
+                      "0xe46769D112F2dED16e9fc46F62014d44f1D6b686"
+                        ? "chosen"
+                        : ""
                     }
                   >
                     Polygon (mainnet)
                   </span>
                 </div>
               </div>
-              <button onClick={handleConnectWallet}>Connect</button>
+              <button
+                className={!chosenNetwork ? "button_disabled" : ""}
+                disabled={!chosenNetwork}
+                onClick={handleConnectWallet}
+              >
+                Connect
+              </button>
             </div>
           </Modal>
         </>

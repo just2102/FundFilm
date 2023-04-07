@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import ethLogo from "../../assets/ethlogo.svg"
+import maticLogo from "../../assets/maticlogo.svg"
 import { donateToCampaign, editCampaign, extendDeadline, fetchCampaignById, withdrawFromCampaign } from "../../Redux/campaignSlice";
 import "../../styles/Campaigns.css"
 import { unixToDate } from "../../utils/unixToDate";
@@ -13,6 +14,7 @@ import EthInput from "../common/EthInput";
 import ReactPlayer from "react-player";
 import { dateToUnix } from "../../utils/dateToUnix";
 import editIcon from "../../assets/edit.svg"
+
 
 const DonateModal = () => {
     const dispatch = useDispatch();
@@ -254,6 +256,10 @@ const Campaign = ({isOwner}) => {
     const {campaignId} = useParams()
     const campaign = useSelector(state=>state.campaigns.currentlyDisplayedCampaign);
     const account = useSelector(state=>state.web3.account)
+
+    const currency = useSelector(state=>state.web3.currency)
+    const [currencyLogo, setCurrencyLogo] = useState(null)
+
     const contract = useSelector(state=>state.web3.contract)
     isOwner = account === campaign?.owner;
     const dispatch = useDispatch();
@@ -311,7 +317,13 @@ const Campaign = ({isOwner}) => {
 
     useEffect(()=>{
         dispatch(fetchCampaignById({contract, campaignId}))
-    },[campaignId, contract])
+        if (currency === "ETH") {
+            setCurrencyLogo(ethLogo)
+        }
+        if (currency === "MATIC") {
+            setCurrencyLogo(maticLogo)
+        }
+    },[campaignId, contract, currency])
     return (
     <>
     {!contract && <h2>Connect your wallet first!</h2> }
@@ -329,8 +341,8 @@ const Campaign = ({isOwner}) => {
                 <div className="campaign_meta_item deadline">Deadline: {deadline} 
                     {isOwner && <button onClick={onExtend}>EXTEND</button>}
                 </div>
-                <div className="campaign_meta_item target">Target: {target} <img id="ethlogo" src={ethLogo} alt="eth" /></div>
-                <div className="campaign_meta_item raised">Raised: {amountCollected} <img id="ethlogo" src={ethLogo} alt="eth" /> </div>
+                <div className="campaign_meta_item target">Target: {target} <img id="currencyLogo" src={currencyLogo} alt="eth" /></div>
+                <div className="campaign_meta_item raised">Raised: {amountCollected} <img id="currencyLogo" src={currencyLogo} alt="eth" /> </div>
             </div>
 
             <div className="campaign_donate">

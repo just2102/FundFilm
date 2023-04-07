@@ -1,4 +1,8 @@
+import { useSelector } from "react-redux";
+
+
 const EthInput = ({label, message, register, errors, currentBalance, balanceCheck, defaultValue }) => {
+  const currency = useSelector(state=>state.web3.currency)
   const validateBalance = (value) => {
     if (balanceCheck && value > currentBalance) {
       return "Insufficient funds";
@@ -23,7 +27,7 @@ const EthInput = ({label, message, register, errors, currentBalance, balanceChec
           placeholder="50..."
         />
         <select name="unit" id="unit">
-          <option value="eth">ETH</option>
+          <option value="eth">{currency}</option>
         </select>
       </div>
       {errors[label] && <span className="form_error">
