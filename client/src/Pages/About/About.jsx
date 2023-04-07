@@ -1,13 +1,23 @@
-import "./About.css"
+import styles from "./About.module.css"
 
 const About = () => {
     return ( 
-        <div className="about">
-            <h1>About FundFilm</h1>
-            <p>This app is intended for movie directors to raise funds for their projects</p>
-            <p>It is built using React, Redux, Solidity and Ethers.JS</p>
-            <p>It is deployed on <span style={{fontStyle:'italic'}}>Sepolia (testnet)</span> and <span style={{fontStyle:'italic'}}>Polygon (mainnet)</span></p>
-            <p>Feel free to take a look at my other projects on my <a href="https://github.com/just2102 " target="_blank">GitHub</a></p>
+        <div className={styles.about}>
+            <h1>About FundFilmDAO</h1>
+            <p>This service is intended for movie creators to raise funds for their projects</p>
+            <h2>OUR GOAL</h2>
+            <p>is to connect moviemakers all over the world with their potential audience</p>
+
+            <h2>WE BELIEVE</h2>
+            <p>that realization of creative nature is of utmost importance</p>
+
+            <h2>WE KNOW</h2>
+            <p>that making movies takes time, assets, and effort, and this is why this project exists</p>
+            
+            <div className={styles.meta}>
+                <p>It is deployed on <span style={{fontStyle:'italic'}}>Sepolia (for testing purposes)</span> and <span style={{fontStyle:'italic'}}>Polygon (mainnet)</span></p>
+                <p><a href="https://github.com/just2102/FundFilm" target="_blank">GitHub Repository</a></p>
+            </div>
         </div>
 
      );

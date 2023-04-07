@@ -51,13 +51,15 @@ body {
   background: #0f1318;
 }
 
-
-#currencyLogo {
+.currencyLogo {
   width: 1.3rem;
   margin-right: 0.5rem;
 }
-#ethlogo {
-  width:0.5rem;
+#ethLogo {
+  width:0.9rem;
+}
+#maticLogo {
+
 }
 
 

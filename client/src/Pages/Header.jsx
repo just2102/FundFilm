@@ -128,9 +128,9 @@ function Header() {
         dispatch(setProvider(web3Provider));
         dispatch(setAccount(account));
         dispatch(setSigner(signer));
+        dispatch(setContract(contract));
         dispatch(setNetwork(chosenNetwork===networks.polygon?"POLYGON":"SEPOLIA"))
         dispatch(setCurrency(chosenNetwork===networks.polygon?"MATIC":"ETH"))
-        dispatch(setContract(contract));
         navigate("/campaigns");
       } else throw new Error("Metamask not found");
     } catch (error) {

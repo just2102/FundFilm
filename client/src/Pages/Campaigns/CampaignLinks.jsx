@@ -1,17 +1,15 @@
 import { ethers } from "ethers";
 import { NavLink, useNavigate } from "react-router-dom";
-import ethLogo from "../../assets/eth.svg"
-import maticLogo from "../../assets/matic.svg"
 import "../../styles/Campaigns.css"
 import { unixToDate } from "../../utils/unixToDate";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import CurrencyLogo from "../common/CurrencyLogo";
 
 const CampaignLinks = ({campaigns}) => {
     const navigate = useNavigate();
 
     const currency = useSelector(state=>state.web3.currency)
-    const [currencyLogo, setCurrencyLogo] = useState(null)
 
     const campaignsMappedAsLinks = campaigns?.map(campaign=>{
         const {owner, campaignId, title, description, video, image, hasWithdrawn} = campaign;
@@ -31,8 +29,13 @@ const CampaignLinks = ({campaigns}) => {
                {hasWithdrawn 
                ? <div className="campaign_meta_item deadline">Finished</div>
                : <div className="campaign_meta_item deadline">Deadline: {deadline}</div> }
-                <div className="campaign_meta_item target">Target: {target} <img id="currencyLogo" src={currencyLogo} alt="eth" /></div>
-                <div className="campaign_meta_item raised">Raised: {amountCollected} <img id="currencyLogo" src={currencyLogo} alt="eth" /> </div>
+                <div className="campaign_meta_item target">Target: {target} 
+                    <CurrencyLogo></CurrencyLogo>
+                </div>
+
+                <div className="campaign_meta_item raised">Raised: {amountCollected} 
+                    <CurrencyLogo></CurrencyLogo>
+                </div>
             </div>
 
 
@@ -44,13 +47,7 @@ const CampaignLinks = ({campaigns}) => {
         )
     })
     useEffect(()=>{
-        if(currency==="ETH"){
-            setCurrencyLogo(ethLogo)
-        }
-        if(currency==="MATIC"){
-            setCurrencyLogo(maticLogo)
-        }
-    },[currency])
+    },[])
     return ( 
         <>
         {campaignsMappedAsLinks}

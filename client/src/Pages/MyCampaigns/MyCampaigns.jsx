@@ -22,9 +22,10 @@ function MyCampaigns() {
   useEffect(()=>{
       dispatch(fetchMyCampaigns({contract, account}));
   },[account])
+
+  if (!contract) return <h2>Connect your wallet first!</h2>
   return (
     <>
-    {!contract && <h2>Connect your wallet first!</h2> }
     <div className="campaigns my">
 
       {account 

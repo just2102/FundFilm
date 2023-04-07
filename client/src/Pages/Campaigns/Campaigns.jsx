@@ -34,7 +34,6 @@ const Campaigns = () => {
     }) 
     }
     if (contract) {
-        // TODO: CampaignEdited should emit the campaignId too
         contract.on("CampaignEdited", (title, description, target, image, video)=>{
         dispatch(fetchCampaigns(contract))
     })
@@ -62,9 +61,10 @@ const Campaigns = () => {
             dispatch(fetchCampaigns(contract))
         }
     },[contract])
+    
+    if (!contract) return <h2>Connect your wallet first!</h2>
     return ( 
         <>
-        {!contract && <h2>Connect your wallet first!</h2> }
         {isFetching && <Preloader/>}
         <div className="campaigns">
             <div className="campaigns_searchbar">
