@@ -2,8 +2,8 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import ethLogo from "../../assets/ethlogo.svg"
-import maticLogo from "../../assets/maticlogo.svg"
+import ethLogo from "../../assets/eth.svg"
+import maticLogo from "../../assets/matic.svg"
 import { donateToCampaign, editCampaign, extendDeadline, fetchCampaignById, withdrawFromCampaign } from "../../Redux/campaignSlice";
 import "../../styles/Campaigns.css"
 import { unixToDate } from "../../utils/unixToDate";
@@ -287,8 +287,9 @@ const Campaign = ({isOwner}) => {
             const response = await dispatch(withdrawFromCampaign({contract, campaignId}))
             if (response.payload.error) {
                 setWithdrawError(response.payload.reason)
+            } else if (!response.payload.error) {
+                setWithdrawError(null)
             }
-            console.log(response)
         }
     }
 

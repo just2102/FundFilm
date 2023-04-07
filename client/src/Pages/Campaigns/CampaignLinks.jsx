@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { NavLink, useNavigate } from "react-router-dom";
-import ethLogo from "../../assets/ethlogo.svg"
-import maticLogo from "../../assets/maticlogo.svg"
+import ethLogo from "../../assets/eth.svg"
+import maticLogo from "../../assets/matic.svg"
 import "../../styles/Campaigns.css"
 import { unixToDate } from "../../utils/unixToDate";
 import { useEffect, useState } from "react";
@@ -21,7 +21,7 @@ const CampaignLinks = ({campaigns}) => {
         const deadline = unixToDate(campaign.deadline)    
         return (
         <>
-        <div className="campaign">
+        <div key={campaignId} className="campaign">
             <NavLink to={`/campaigns/${campaignId}`} key={campaignId}>
             <div className="campaign_title">{title}</div>
             <div className="campaign_description">{formattedDescription}</div>
