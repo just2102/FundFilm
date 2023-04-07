@@ -64,6 +64,7 @@ const Campaigns = () => {
     },[contract])
     return ( 
         <>
+        {!contract && <h2>Connect your wallet first!</h2> }
         {isFetching && <Preloader/>}
         <div className="campaigns">
             <div className="campaigns_searchbar">

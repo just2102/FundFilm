@@ -296,20 +296,25 @@ const Campaign = ({isOwner}) => {
         setEditModalOpen(true);
     }
 
-    contract.on("CampaignDeadlineExtended", () => {
-        dispatch(fetchCampaignById({contract, campaignId}))
-        setExtendModalOpen(false)
-    })
-    contract.on("CampaignEdited", (campaignId, newCampaignData, event) => {
-        dispatch(fetchCampaignById({contract, campaignId}))
-        setEditModalOpen(false)
-    })
+    if (contract) {
+        contract.on("CampaignDeadlineExtended", () => {
+            dispatch(fetchCampaignById({contract, campaignId}))
+            setExtendModalOpen(false)
+        })
+    }
+    if (contract) {
+        contract.on("CampaignEdited", (campaignId, newCampaignData, event) => {
+            dispatch(fetchCampaignById({contract, campaignId}))
+            setEditModalOpen(false)
+        })
+    }
 
     useEffect(()=>{
         dispatch(fetchCampaignById({contract, campaignId}))
     },[campaignId, contract])
     return (
     <>
+    {!contract && <h2>Connect your wallet first!</h2> }
         {!campaign && <Preloader/> }
         {campaign && 
         <div className="campaign">

@@ -24,6 +24,7 @@ function MyCampaigns() {
   },[account])
   return (
     <>
+    {!contract && <h2>Connect your wallet first!</h2> }
     <div className="campaigns my">
 
       {account 
