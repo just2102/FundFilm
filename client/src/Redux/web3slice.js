@@ -59,6 +59,7 @@ export const web3Slice = createSlice({
       state.provider = initialState.provider;
       state.signer = initialState.signer;
       state.transactions = initialState.transactions;
+      state.currency = initialState.currency;
     }
   },
 });

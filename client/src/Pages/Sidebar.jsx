@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import "../styles/Sidebar.css"
 import { NavLink } from 'react-router-dom';
@@ -8,17 +8,24 @@ import sun from "../assets/sun.svg"
 import githubIcon from "../assets/github-mark-white.svg"
 import Modal from "react-modal";
 import AddCampaignModal from './common/AddCampaignModal';
+import { useSelector } from 'react-redux';
 
 function Sidebar() {
     const navigate = useNavigate();
     const [isActive, setIsActive] = useState('dashboard');
+    const account = useSelector(state=>state.web3.account);
+    const network = useSelector(state=>state.web3.network);
 
     const [addCampaignModalOpen, setAddCampaignModalOpen] = useState(false);
+    useEffect(()=>{
+    },[account])
   return (
     <>
     <div className='sidebar'>
-        <NavLink to={"/profile"}> <img src={profile} alt="profile" /> </NavLink>
-        <button onClick={()=>setAddCampaignModalOpen(true)}>START</button>
+        {!account && <div></div>}
+        {network==="SEPOLIA" && <div>TESTNET</div>}
+        {(account && network!=="SEPOLIA") && <NavLink to={"/profile"}> <img src={profile} alt="profile" /> </NavLink>}
+        <button disabled={!account} id={!account ? 'disabled' : ''} onClick={()=>setAddCampaignModalOpen(true)}>START</button>
         <a href="https://github.com/just2102/" target="_blank"><img src={githubIcon} alt="" /></a>
         {/* <img src={sun} alt="sun" /> */}
     </div>

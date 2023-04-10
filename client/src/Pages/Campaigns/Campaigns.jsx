@@ -57,7 +57,7 @@ const Campaigns = () => {
     }
 
     useEffect(()=>{
-        if (allCampaigns.length === 0) {
+        if (contract && allCampaigns.length === 0) {
             dispatch(fetchCampaigns(contract))
         }
     },[contract])

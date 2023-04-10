@@ -20,7 +20,9 @@ function MyCampaigns() {
 
 
   useEffect(()=>{
-      dispatch(fetchMyCampaigns({contract, account}));
+      if (contract && account && myCampaigns.length === 0) {
+        dispatch(fetchMyCampaigns({contract, account}));
+      }
   },[account])
 
   if (!contract) return <h2>Connect your wallet first!</h2>
