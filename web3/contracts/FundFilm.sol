@@ -45,7 +45,7 @@ contract FundFilm {
     ) public returns (uint256) {
         require(_deadline > block.timestamp,"Deadline should be in the future");
         Campaign storage newCampaign = campaigns[numberOfCampaigns];
-        newCampaign.owner = msg.sender;
+        newCampaign.owner = payable(msg.sender);
         newCampaign.campaignId = numberOfCampaigns;
         newCampaign.title = _title;
         newCampaign.description = _description;
@@ -102,6 +102,7 @@ contract FundFilm {
     event DonatedToCampaign(address donator, uint256 _campaignId, uint256 _amount);
     function donateToCampaign(uint256 _id) public payable {
         Campaign storage campaign = campaigns[_id];
+        require(msg.sender != campaign.owner, "Cannot donate to own campaigns!");
         require(campaign.hasWithdrawn == false,"The owner of this campaign has already withdrawn from it. No further donations allowed.");
         campaign.donators.push(msg.sender);
         campaign.donations.push(msg.value);
@@ -119,7 +120,7 @@ contract FundFilm {
         _;
     }
     modifier campaignHasEnded(uint256 _campaignId) {
-        // a campaign is considered as 'finished' if one of the conditions is true:
+        // a campaign is considered 'finished' if either of the conditions is true:
         require(
         campaigns[_campaignId].deadline <= block.timestamp
         || 
@@ -132,10 +133,11 @@ contract FundFilm {
         Campaign storage campaign = campaigns[_campaignId];
         require(campaign.hasWithdrawn == false, "You can only withdraw once!");
         uint256 sumAfterFee = campaign.amountCollected - ((campaign.amountCollected * WITHDRAWAL_FEE) / 100);
-        payable(campaign.owner).transfer(sumAfterFee);
 
         campaign.hasWithdrawn = true;
         CAMPAIGNS_VALUE_LOCKED -= campaign.amountCollected;
+
+        payable(campaign.owner).transfer(sumAfterFee);
         emit WithdrewFromCampaign(_campaignId, campaign.owner, sumAfterFee);
     }
 
@@ -145,7 +147,7 @@ contract FundFilm {
     }
     function withdrawServiceFees() onlyPlatformOwner public {
         // withdraw all the contract balance excluding the campaigns' locked funds
-        uint256 amountToWithdraw = address(this).balance - ((CAMPAIGNS_VALUE_LOCKED * (100 - WITHDRAWAL_FEE)) / 100);
+        uint256 amountToWithdraw = address(this).balance - CAMPAIGNS_VALUE_LOCKED;
         (bool sent, ) = platformOwner.call{value: amountToWithdraw}("");
         require(sent, "Failed to withdraw");
     }
