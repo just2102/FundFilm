@@ -57,10 +57,10 @@ function Header() {
   };
   const [chosenNetwork, setChosenNetwork] = useState(null);
   const networks = {
-    sepolia: "0xfe3f36a621901bE6E19227f7A121cB14DdC739Ae",
-    // 0xC85e2cDE16bdaC9eb3c3AA0fDa4A67a4a78CD5E0
-    polygon: "0x7140978f40D30a9ef284A7C998e236B42E9fdFA8",
-    // 0xe46769D112F2dED16e9fc46F62014d44f1D6b686
+    sepolia: "0xfAEF615930a30B512374d729949707BD5d355326",
+    // 0xfe3f36a621901bE6E19227f7A121cB14DdC739Ae
+    polygon: "0x3bC6720b8CbF472B7672b52b1F00E140511Ba4C1",
+    // 0x7140978f40D30a9ef284A7C998e236B42E9fdFA8
   };
   const handleSelectNetwork = async (network) => {
     if (network === networks.polygon) {

@@ -60,25 +60,6 @@ contract FundFilm {
         return newCampaign.campaignId;
     }
 
-    event CampaignEdited(string _title, string _description, uint256 _target, string _image, string _video);
-    function editCampaign(
-        uint256 _id,
-        string memory _title,
-        string memory _description,
-        uint256 _target,
-        string memory _image,
-        string memory _video
-    ) public {
-        Campaign storage campaign = campaigns[_id];
-        require(msg.sender == campaign.owner,"Only campaign owners can edit their campaigns!");
-        campaign.title = _title;
-        campaign.description = _description;
-        campaign.target = _target;
-        campaign.image = _image;
-        campaign.video = _video;
-        emit CampaignEdited(_title, _description, _target, _image, _video);
-    }
-    
     modifier campaignHasNotEnded(uint256 _campaignId) {
         require(
             campaigns[_campaignId].hasWithdrawn == false
@@ -86,6 +67,27 @@ contract FundFilm {
             , "Campaign has already finished");
         _;
     }
+
+    event CampaignEdited(uint256 indexed _id, string _title, string _description, uint256 _target, string _image, string _video);
+    function editCampaign(
+        uint256 _id,
+        string memory _title,
+        string memory _description,
+        uint256 _target,
+        string memory _image,
+        string memory _video
+    ) public
+      campaignHasNotEnded(_id) {
+        Campaign storage campaign = campaigns[_id];
+        require(msg.sender == campaign.owner,"Only campaign owners can edit their campaigns!");
+        campaign.title = _title;
+        campaign.description = _description;
+        campaign.target = _target;
+        campaign.image = _image;
+        campaign.video = _video;
+        emit CampaignEdited(_id, _title, _description, _target, _image, _video);
+    }
+    
     event CampaignDeadlineExtended(uint256 _id, uint256 _newDeadline, uint256 feePaid);
     function extendDeadline(uint256 _id, uint256 _newDeadline) campaignHasNotEnded(_id)  public payable {
         // extending a deadline should cost 2% of the target
@@ -99,7 +101,7 @@ contract FundFilm {
         emit CampaignDeadlineExtended(_id, _newDeadline, fee);
     }
 
-    event DonatedToCampaign(address donator, uint256 _campaignId, uint256 _amount);
+    event DonatedToCampaign(address indexed donator, uint256 indexed _campaignId, uint256 _amount);
     function donateToCampaign(uint256 _id) public payable {
         Campaign storage campaign = campaigns[_id];
         require(msg.sender != campaign.owner, "Cannot donate to own campaigns!");
@@ -128,7 +130,7 @@ contract FundFilm {
         ,"Campaign hasn't ended yet");
         _;
     }
-    event WithdrewFromCampaign(uint256 _campaignId, address _owner,uint256 _amountWithdrawn);
+    event WithdrewFromCampaign(uint256 indexed _campaignId, address indexed _owner,uint256 _amountWithdrawn);
     function withdrawFromCampaign(uint256 _campaignId) onlyCampaignOwner(_campaignId) campaignHasEnded(_campaignId) public {
         Campaign storage campaign = campaigns[_campaignId];
         require(campaign.hasWithdrawn == false, "You can only withdraw once!");
