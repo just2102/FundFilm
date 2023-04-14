@@ -13,7 +13,7 @@ import ReactPlayer from "react-player";
 import { dateToUnix } from "../../utils/dateToUnix";
 import editIcon from "../../assets/edit.svg"
 import CurrencyLogo from "../common/CurrencyLogo";
-
+import { Snackbar, Alert } from "@mui/material";
 
 const DonateModal = () => {
     const dispatch = useDispatch();
@@ -260,6 +260,14 @@ const Campaign = ({isOwner}) => {
 
     const contract = useSelector(state=>state.web3.contract)
     isOwner = account === campaign?.owner;
+    
+    const hasEnded = (campaign?.deadline * 1000) < Date.now() || campaign?.hasWithdrawn === true;
+
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: ""
+    })
+
     const dispatch = useDispatch();
     let owner, title, description, video, image, hasWithdrawn, target, amountCollected, deadline;
     if (campaign) {
@@ -298,6 +306,10 @@ const Campaign = ({isOwner}) => {
 
     const [editModalOpen, setEditModalOpen] = useState(false);
     const onEdit = () => {
+        if (hasEnded) {
+            setSnackbar({open:true, message: "This campaign has already finished!"})
+            return;
+        }
         setEditModalOpen(true);
     }
 
@@ -343,7 +355,7 @@ const Campaign = ({isOwner}) => {
             </div>
 
             <div className="campaign_donate">
-                <button onClick={onDonate}>DONATE</button>
+                {!isOwner && <button onClick={onDonate}>DONATE</button>}
             </div>
             {(isOwner && !hasWithdrawn) &&
             <div className="campaign_withdraw">
@@ -373,6 +385,15 @@ const Campaign = ({isOwner}) => {
         onRequestClose={()=>setEditModalOpen(false)}>
             <EditModal/>
         </Modal>
+
+        <Snackbar 
+        anchorOrigin={{vertical: "top", horizontal: "right"}}
+        autoHideDuration={1500}
+        onClose={()=>setSnackbar({open:false, message:""})}
+        open={snackbar.open}
+        >
+        <Alert severity="info">{snackbar.message}</Alert>
+        </Snackbar>
     </>
     );
 }

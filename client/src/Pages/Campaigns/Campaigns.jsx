@@ -18,7 +18,7 @@ const Campaigns = () => {
     const allCampaigns = useSelector(state=>state.campaigns.campaigns);
     const isFetching = useSelector(state=>state.campaigns.isFetching)
 
-    const [showFinishedCampaigns, setShowFinishedCampaigns] = useState(false)
+    const [showFinishedCampaigns, setShowFinishedCampaigns] = useState(true)
     const ongoingCampaigns = allCampaigns.filter(campaign=>{
         return campaign.hasWithdrawn === false;
     })
