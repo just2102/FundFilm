@@ -6,5 +6,5 @@
 ![fundfilm_desktop](https://user-images.githubusercontent.com/88230737/228380961-0d671cb7-fe38-49c9-b92d-f28cf415dbd2.png)
 
 ## Contract addresses:
-### Polygon: 0xe46769D112F2dED16e9fc46F62014d44f1D6b686 (polygonscan.com)
-### Sepolia: 0xC85e2cDE16bdaC9eb3c3AA0fDa4A67a4a78CD5E0 (sepolia.etherscan.io)
+### Polygon: 0x3bC6720b8CbF472B7672b52b1F00E140511Ba4C1 (polygonscan.com)
+### Sepolia: 0xfAEF615930a30B512374d729949707BD5d355326 (sepolia.etherscan.io)
