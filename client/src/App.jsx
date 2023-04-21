@@ -35,8 +35,8 @@ function App() {
     // 0x7140978f40D30a9ef284A7C998e236B42E9fdFA8
   };
 
-  const [chosenNetwork, setChosenNetwork] = useState(networks.sepolia);
-
+  const [chosenNetwork, setChosenNetwork] = useState(null);
+  
   const handleConnectWallet = async () => {
     try {
       setIsConnecting(true);
@@ -66,8 +66,27 @@ function App() {
   };
 
   useEffect(()=>{
-    handleConnectWallet();
-  },[])
+    const detectNetwork = async () => {
+      if (window.ethereum) {
+        const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+        const network = await web3Provider.getNetwork();
+        switch(network.chainId){
+          case 137:
+            setChosenNetwork(networks.polygon)
+            break;
+          case 11155111:
+            setChosenNetwork(networks.sepolia)
+            break;
+          default:
+            dispatch(setNetwork("UNSUPPORTED"))
+            throw new Error("Unsupported network");
+        }
+      }
+    };
+    detectNetwork().then(()=>{
+      handleConnectWallet()
+    })
+  },[chosenNetwork])
 
   if (isConnecting) return <Preloader  loadingText={"Please wait..."}/>
   else

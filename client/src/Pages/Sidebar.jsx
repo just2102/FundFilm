@@ -24,6 +24,8 @@ function Sidebar() {
     <div className='sidebar'>
         {!account && <div></div>}
         {network==="SEPOLIA" && <div>TESTNET</div>}
+        {network==="POLYGON" && <div>MAINNET</div>}
+        {network==="UNSUPPORTED" && <div>UNSUPPORTED NETWORK</div>}
         {(account && network!=="SEPOLIA") && <NavLink to={"/profile"}> <img src={profile} alt="profile" /> </NavLink>}
         <button disabled={!account} id={!account ? 'disabled' : ''} onClick={()=>setAddCampaignModalOpen(true)}>START</button>
         <a href="https://github.com/just2102/" target="_blank"><img src={githubIcon} alt="" /></a>
