@@ -4,7 +4,7 @@ export type ContractInteraction = {
   meta: ContractInteractionMeta;
   payload: undefined | any;
   type: string; // "startCampaign/fulfilled"
-  error?: any;
+  error?: ContractInteractionError;
   reason?: string;
 };
 
@@ -15,4 +15,10 @@ type ContractInteractionMeta = {
   };
   requestId: string;
   requestStatus: string;
+};
+
+type ContractInteractionError = {
+  code: number;
+  data: object;
+  message: string;
 };

@@ -21,6 +21,7 @@ import CurrencyLogo from "../common/CurrencyLogo";
 import { Snackbar, Alert } from "@mui/material";
 import { useCustomSelector } from "../../Redux/useCustomSelector";
 import { useCustomDispatch } from "../../Redux/useCustomDispatch";
+import { ContractInteraction } from "../../types/ethersTypes";
 
 type DonateFormValues = {
   amount: string;
@@ -419,18 +420,28 @@ const Campaign = () => {
     setDonateModalOpen(true);
   };
 
-  const [withdrawError, setWithdrawError] = useState(null);
+  const [withdrawError, setWithdrawError] = useState<string | undefined>(
+    undefined
+  );
   const onWithdraw = async () => {
     if (contract && campaignId) {
-      const response = await dispatch(
-        withdrawFromCampaign({ contract, campaignId: Number(campaignId) })
-      );
-      // todo: add type (check ethers doc)
-      const ethersResponsePayload = response.payload as any;
-      if (ethersResponsePayload.error) {
-        setWithdrawError(ethersResponsePayload.reason);
+      try {
+        const response = await dispatch(
+          withdrawFromCampaign({ contract, campaignId: Number(campaignId) })
+        );
+        const parsedResponsePayload = JSON.parse(
+          JSON.stringify(response.payload)
+        ) as ContractInteraction;
+        if (!parsedResponsePayload.error) {
+          setWithdrawError(undefined);
+        } else {
+          setWithdrawError(parsedResponsePayload.error.message);
+        }
+      } catch (error) {
+        console.log("error: ", error);
+        const handledError = error as Error;
+        setWithdrawError(handledError.message);
       }
-      setWithdrawError(null);
     }
   };
 
