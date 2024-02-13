@@ -124,7 +124,9 @@ const ExtendModal = () => {
   const isTransacting = useCustomSelector().campaigns.isTransacting;
 
   const [currentBalance, setCurrentBalance] = useState(0);
-  const [balanceError, setBalanceError] = useState(null);
+  const [balanceError, setBalanceError] = useState<string | undefined>(
+    undefined
+  );
   const getCurrentBalance = async () => {
     if (!provider || !account) return;
     setCurrentBalance(
@@ -150,8 +152,10 @@ const ExtendModal = () => {
     const response = await dispatch(
       extendDeadline({ contract, campaignId, newDeadline, costToExtend })
     );
-    // todo: add type (check ethers doc)
-    const ethersResponsePayload = response.payload as any;
+    const isSuccessResponse = response.payload === undefined;
+    if (isSuccessResponse) return;
+
+    const ethersResponsePayload = response.payload as ContractInteraction;
     if (ethersResponsePayload.error) {
       setBalanceError(ethersResponsePayload.reason);
       return;
