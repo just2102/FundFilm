@@ -1,0 +1,20 @@
+{
+  "name": "hardhat-javascript-starter",
+  "scripts": {
+    "startLocalNodeFirst": "npx hardhat node",
+    "recompile": "npx hardhat clean && npx hardhat compile",
+    "deployLocally": "npx hardhat run scripts/deploy.js --network localhost",
+    "deploySepolia": "npx hardhat run scripts/deploy.js --network sepolia"
+  },
+  "devDependencies": {
+    "@matterlabs/hardhat-zksync-deploy": "^0.6.3",
+    "@matterlabs/hardhat-zksync-solc": "^0.3.16",
+    "hardhat": "^2.13.0"
+  },
+  "dependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "@thirdweb-dev/contracts": "^3",
+    "dotenv": "^16.0.3",
+    "ethereum-waffle": "^4.0.10"
+  }
+}
