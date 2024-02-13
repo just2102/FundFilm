@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 import { fetchCampaignById, fetchCampaigns } from "../../Redux/campaignSlice";
-// import Campaign from "./Campaign";
 import "../../styles/Campaigns.css";
 import Preloader from "../common/Preloader";
-// import { NavLink, useNavigate } from "react-router-dom";
-// import CampaignLink from "./CampaignLinks";
-// import { Route, Routes } from "react-router-dom";
 import CampaignLinks from "./CampaignLinks";
-// import searchIcon from "../../assets/search.svg";
 import { useCustomDispatch } from "../../Redux/useCustomDispatch";
 import { useCustomSelector } from "../../Redux/useCustomSelector";
 
