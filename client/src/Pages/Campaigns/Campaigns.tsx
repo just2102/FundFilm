@@ -12,7 +12,6 @@ const Campaigns = () => {
   const dispatch = useCustomDispatch();
 
   const allCampaigns = useCustomSelector().campaigns.campaigns;
-  console.log("all campaigns: ", allCampaigns);
   const isFetching = useCustomSelector().campaigns.isFetching;
 
   const [showFinishedCampaigns, setShowFinishedCampaigns] = useState(true);

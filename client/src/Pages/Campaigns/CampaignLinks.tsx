@@ -4,16 +4,17 @@ import "../../styles/Campaigns.css";
 import { unixToDate } from "../../utils/unixToDate";
 import { useEffect } from "react";
 import CurrencyLogo from "../common/CurrencyLogo";
+import { Campaign } from "../../types/campaignsTypes";
 
 interface Props {
-  campaigns: any;
+  campaigns: Campaign[];
 }
 const CampaignLinks = ({ campaigns }: Props) => {
   const navigate = useNavigate();
 
   //   const currency = useCustomSelector().web3.currency; todo: use
 
-  const campaignsMappedAsLinks = campaigns?.map((campaign: any) => {
+  const campaignsMappedAsLinks = campaigns.map((campaign: any) => {
     const { campaignId, title, description, image, hasWithdrawn } = campaign;
     const formattedDescription =
       description.length > 100
