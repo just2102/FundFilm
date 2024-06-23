@@ -20,6 +20,11 @@ module.exports = {
     settings: {},
   },
   networks: {
+    scroll: {
+      url: "https://rpc.scroll.io",
+      chainId: 534352,
+      accounts: [process.env.SCROLL_ACCOUNT_1],
+    },
     sepolia: {
       zksync: false,
       url: process.env.SEPOLIA_URL,
@@ -36,10 +41,6 @@ module.exports = {
       url: "https://testnet.era.zksync.dev",
       ethNetwork: "goerli",
       zksync: true,
-    },
-    scroll: {
-      url: "https://rpc.scroll.io",
-      chainId: 534352,
     },
   },
 };
