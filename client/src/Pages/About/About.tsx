@@ -6,33 +6,34 @@ const About = () => {
       <h1>About FundFilmDAO</h1>
       <p>
         This service is intended for movie creators to raise funds for their
-        projects
+        projects.
       </p>
       <h2>OUR GOAL</h2>
       <p>
         is to connect moviemakers all over the world with their potential
-        audience
+        audience.
       </p>
-
       <h2>WE BELIEVE</h2>
-      <p>that realization of creative nature is of utmost importance</p>
-
+      <p>that realization of creative nature is of utmost importance.</p>
       <h2>WE KNOW</h2>
       <p>
         that making movies takes time, assets, and effort, and this is why this
-        project exists
+        project exists.
       </p>
 
       <div className={styles.meta}>
+        <div className={styles.networksInfo}>
+          <h4>Supported Networks</h4>
+          <p className={styles.network}>Polygon</p>
+          <p className={styles.network}>Scroll</p>
+          <p className={styles.network}>Sepolia</p>
+        </div>
         <p>
-          It is deployed on{" "}
-          <span style={{ fontStyle: "italic" }}>
-            Sepolia (for testing purposes)
-          </span>{" "}
-          and <span style={{ fontStyle: "italic" }}>Polygon (mainnet)</span>
-        </p>
-        <p>
-          <a href="https://github.com/just2102/" target="_blank">
+          <a
+            href="https://github.com/just2102/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             GitHub
           </a>
         </p>

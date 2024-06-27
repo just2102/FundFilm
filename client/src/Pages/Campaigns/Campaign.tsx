@@ -94,11 +94,6 @@ const DonateModal = () => {
           currentBalance={currentBalance}
           balanceCheck={true}
         />
-        {/* {balanceError && 
-            <div className="form_error">
-                <span>{balanceError}</span>
-                <span>{`Current balance: ${currentBalance} ETH`}</span>
-            </div>} */}
         {isDonating && <Preloader />}
         <button
           disabled={isDonating}

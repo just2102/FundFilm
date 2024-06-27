@@ -108,6 +108,7 @@
 .addCampaignModal {
   display: flex;
   gap: 1rem;
+  padding: 20px;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
