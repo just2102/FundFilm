@@ -2,14 +2,18 @@
 
 ## A Web3 service to help movie makers raise funds
 
-## Currently deployed on SEPOLIA (TESTNET) & POLYGON (MAINNET)
+[Live at FundFilm](https://fundfilm.xyz/)
 
-## Supports Metamask
+## Contract Addresses
 
-### Live at https://fundfilm.xyz/
+### Polygon
 
-## Contract addresses:
+- `0x3bC6720b8CbF472B7672b52b1F00E140511Ba4C1`
 
-### Polygon: 0x3bC6720b8CbF472B7672b52b1F00E140511Ba4C1 (polygonscan.com)
+### Scroll
 
-### Sepolia: 0xfAEF615930a30B512374d729949707BD5d355326 (sepolia.etherscan.io)
+- `0x60ce7a4a77a0034eb3629dc99a52b2a8cfc39c5f`
+
+### Sepolia (Testnet)
+
+- `0xfAEF615930a30B512374d729949707BD5d355326`
