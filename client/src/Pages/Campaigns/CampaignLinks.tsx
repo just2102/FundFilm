@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { ethers } from "ethers";
@@ -5,9 +6,6 @@ import { ethers } from "ethers";
 import "../../styles/Campaigns.css";
 import { Campaign } from "../../types/campaignsTypes";
 import { unixToDate } from "../../utils/unixToDate";
-
-import { useEffect } from "react";
-
 import CurrencyLogo from "../common/CurrencyLogo";
 
 interface Props {

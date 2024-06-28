@@ -1,22 +1,20 @@
-import { ethers } from "ethers";
-
+import "src/styles/Campaigns.css";
 import { useEffect, useState } from "react";
-
-import "../../styles/Campaigns.css";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Modal from "react-modal";
 import ReactPlayer from "react-player";
 import { useParams } from "react-router-dom";
 
 import { Snackbar, Alert } from "@mui/material";
+import { ethers } from "ethers";
+import editIcon from "src/assets/edit.svg";
+import { donateToCampaign, editCampaign, extendDeadline, fetchCampaignById, withdrawFromCampaign } from "src/Redux/campaignSlice";
+import { useCustomDispatch } from "src/Redux/useCustomDispatch";
+import { useCustomSelector } from "src/Redux/useCustomSelector";
+import { ContractInteraction } from "src/types/ethersTypes";
+import { dateToUnix } from "src/utils/dateToUnix";
+import { unixToDate } from "src/utils/unixToDate";
 
-import editIcon from "../../assets/edit.svg";
-import { donateToCampaign, editCampaign, extendDeadline, fetchCampaignById, withdrawFromCampaign } from "../../Redux/campaignSlice";
-import { useCustomDispatch } from "../../Redux/useCustomDispatch";
-import { useCustomSelector } from "../../Redux/useCustomSelector";
-import { ContractInteraction } from "../../types/ethersTypes";
-import { dateToUnix } from "../../utils/dateToUnix";
-import { unixToDate } from "../../utils/unixToDate";
 import CurrencyLogo from "../common/CurrencyLogo";
 import EthInput from "../common/EthInput";
 import Preloader from "../common/Preloader";
