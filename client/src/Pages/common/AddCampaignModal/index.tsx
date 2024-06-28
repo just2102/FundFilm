@@ -8,8 +8,10 @@ import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
 import { ContractInteraction } from "src/types/ethersTypes";
 
-import EthInput from "./EthInput";
-import Preloader from "./Preloader";
+import styles from "./AddCampaignModal.module.css";
+
+import EthInput from "../EthInput";
+import Preloader from "../Preloader";
 
 export type FormValues = {
   title: string;
@@ -78,10 +80,10 @@ function AddCampaignModal() {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='addCampaignModal'
+        className={styles.addCampaignModal}
       >
         <h3>Start a campaign!</h3>
-        <div className='addCampaign_fieldColumn'>
+        <div className={styles.addCampaign_fieldColumn}>
           <label htmlFor='title'>Your movie title</label>
           <input
             {...register("title", {
@@ -98,7 +100,7 @@ function AddCampaignModal() {
           {errors.title && <span className='form_error'>{errors.title.message?.toString()}</span>}
         </div>
 
-        <div className='addCampaign_fieldColumn'>
+        <div className={styles.addCampaign_fieldColumn}>
           <label htmlFor='description'>Describe your movie</label>
           <textarea
             cols={30}
@@ -127,9 +129,9 @@ function AddCampaignModal() {
           errors={errors}
           currentBalance={currentBalance}
           balanceCheck={false}
-        ></EthInput>
+        />
 
-        <div className='addCampaign_fieldColumn'>
+        <div className={styles.addCampaign_fieldColumn}>
           <label htmlFor='deadline'>Deadline (choose carefully!)</label>
           <input
             {...register("deadline", {
@@ -141,7 +143,7 @@ function AddCampaignModal() {
           {errors.deadline && <span className='form_error'>{errors.deadline.message?.toString()}</span>}
         </div>
 
-        <div className='addCampaign_fieldColumn'>
+        <div className={styles.addCampaign_fieldColumn}>
           <fieldset id='newCampaignImage'>
             <legend>Image options</legend>
             {/* <input 
@@ -188,7 +190,7 @@ function AddCampaignModal() {
           {errors.image && <span className='form_error'>{errors.image.message?.toString()}</span>}
         </div>
 
-        <div className='addCampaign_fieldColumn'>
+        <div className={styles.addCampaign_fieldColumn}>
           <label htmlFor='video'>Teaser link (optional)</label>
           <input
             {...register("video")}
