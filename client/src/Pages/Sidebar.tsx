@@ -4,10 +4,10 @@ import Modal from "react-modal";
 import githubIcon from "src/assets/github-mark-white.svg";
 import profile from "src/assets/profile.svg";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
-import styles from "src/styles/Sidebar.module.css";
 import { networks } from "src/utils/const";
 
 import AddCampaignModal from "./common/AddCampaignModal";
+import styles from "./Sidebar.module.css";
 
 function Sidebar() {
   const account = useCustomSelector().web3.account;

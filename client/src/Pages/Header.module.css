@@ -1,6 +1,7 @@
 @font-face {
   font-family: "robotobold_condensed_italic";
-  src: url("../fonts/roboto-boldcondenseditalic-webfont.woff2") format("woff2"),
+  src:
+    url("../fonts/roboto-boldcondenseditalic-webfont.woff2") format("woff2"),
     url("../fonts/roboto-boldcondenseditalic-webfont.woff") format("woff");
   font-weight: normal;
   font-style: normal;

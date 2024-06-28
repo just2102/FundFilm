@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
+import { parseUnits } from "viem";
+import { writeContract } from "viem/actions";
 
 import { Campaign } from "../types/campaignsTypes";
 
@@ -204,25 +206,33 @@ export const extendDeadline = createAsyncThunk(
 interface EditCampaignArgs {
   contract: ethers.Contract;
   campaignId: number | string;
-  newCampaignData: any;
+  newCampaignData: CampaignData;
+}
+
+export interface CampaignData {
+  title: string;
+  description: string;
+  targetParsed: ethers.BigNumber;
+  image: string;
+  video: string;
 }
 export const editCampaign = createAsyncThunk(
   "editCampaign",
   async ({ contract, campaignId, newCampaignData }: EditCampaignArgs, { dispatch }) => {
     dispatch(toggleIsTransacting());
-    const { title, description, target, image, video } = newCampaignData;
+    const { title, description, targetParsed, image, video } = newCampaignData;
     try {
-      console.log(title);
-      console.log(video);
       const campaignIdAsNumber = Number(campaignId);
-      const tx = await contract.editCampaign(campaignIdAsNumber, title, description, target, image, video);
+
+      const tx = await contract.editCampaign(campaignIdAsNumber, title, description, targetParsed, image, video);
+
       const receipt = await tx.wait();
       console.log(receipt);
       if (receipt.status === 1) {
         dispatch(fetchCampaignById({ contract, campaignId: campaignIdAsNumber }));
       }
     } catch (error) {
-      return error;
+      throw error;
     } finally {
       dispatch(toggleIsTransacting());
     }

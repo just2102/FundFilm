@@ -3,11 +3,13 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
 import { ethers } from "ethers";
+import styles from "src/Pages/common/AddCampaignModal/AddCampaignModal.module.css";
 import EthInput from "src/Pages/common/EthInput";
 import Preloader from "src/Pages/common/Preloader";
-import { editCampaign } from "src/Redux/campaignSlice";
+import { CampaignData, editCampaign } from "src/Redux/campaignSlice";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
+import { fromReadableAmount } from "src/utils/conversion";
 
 interface EditFormValues {
   title: string;
@@ -27,11 +29,7 @@ const EditModal = () => {
   const {
     register,
     handleSubmit,
-    // watch,
-    formState: {
-      errors,
-      //  balance
-    },
+    formState: { errors },
   } = useForm<EditFormValues>();
   const { campaignId } = useParams();
   const [imageOption, setImageOption] = useState("link");
@@ -40,9 +38,10 @@ const EditModal = () => {
       return;
     }
     const { title, target, description, image, video } = data;
-    const targetParsed = ethers.utils.parseEther(target);
-    // deadline = Date.parse(deadline) / 1000;
-    const newCampaignData = {
+
+    const targetParsed = fromReadableAmount(target);
+
+    const newCampaignData: CampaignData = {
       title,
       description,
       targetParsed,
@@ -57,10 +56,10 @@ const EditModal = () => {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='addCampaignModal'
+        className={styles.addCampaignModal}
       >
         <h3>Edit "{campaign.title}"</h3>
-        <div className='addCampaign_fieldColumn'>
+        <div className={styles.addCampaign_fieldColumn}>
           <label htmlFor='title'>New title</label>
           <input
             defaultValue={campaign.title}
@@ -78,7 +77,7 @@ const EditModal = () => {
           {errors.title && <span className='form_error'>{errors.title.message?.toString()}</span>}
         </div>
 
-        <div className='addCampaign_fieldColumn'>
+        <div className={styles.addCampaign_fieldColumn}>
           <label htmlFor='description'>New description</label>
           <textarea
             defaultValue={campaign.description}
@@ -110,7 +109,7 @@ const EditModal = () => {
           defaultValue={parseFloat(ethers.utils.formatEther(campaign.target))}
         />
 
-        <div className='addCampaign_fieldColumn'>
+        <div className={styles.addCampaign_fieldColumn}>
           <fieldset id='newCampaignImage'>
             <legend>Image options</legend>
             {/* <input 
@@ -158,10 +157,9 @@ const EditModal = () => {
           {errors.image && <span className='form_error'>{errors.image.message?.toString()}</span>}
         </div>
 
-        <div className='addCampaign_fieldColumn'>
+        <div className={styles.addCampaign_fieldColumn}>
           <label htmlFor='video'>Teaser link (optional)</label>
           <input
-            defaultValue={campaign.video}
             {...register("video")}
             id='video'
             type='text'

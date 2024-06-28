@@ -13,8 +13,6 @@ interface Props {
 const CampaignLinks = ({ campaigns }: Props) => {
   const navigate = useNavigate();
 
-  //   const currency = useCustomSelector().web3.currency; todo: use
-
   const campaignsMappedAsLinks = campaigns.map((campaign: any) => {
     const { campaignId, title, description, image, hasWithdrawn } = campaign;
     const formattedDescription = description.length > 100 ? description.slice(0, 100) + "..." : description;

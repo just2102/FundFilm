@@ -146,15 +146,6 @@ function AddCampaignModal() {
         <div className={styles.addCampaign_fieldColumn}>
           <fieldset id='newCampaignImage'>
             <legend>Image options</legend>
-            {/* <input 
-                {...register("imageOption",)}
-                onClick={(e)=>{setImageOption(e.target.value)}}
-                id="uploadImage" type="radio"
-                name="imageOption" value="upload"
-                checked={imageOption==="upload"}
-                />
-                <label htmlFor="uploadImage">Upload (temporarily N/A)</label> */}
-
             <input
               {...register("imageOption")}
               onClick={(e) => {

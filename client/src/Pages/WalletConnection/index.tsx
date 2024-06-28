@@ -6,10 +6,11 @@ import { ethers } from "ethers";
 import contractArtifact from "src/FundFilm.json";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { setAccount, setContract, setCurrency, setNetwork, setProvider, setSigner } from "src/Redux/web3slice";
-import styles from "src/styles/Header.module.css";
 import { networks, networksToCurrencies } from "src/utils/const";
 
 import NetworkModal from "./NetworkModal";
+
+import styles from "../Header.module.css";
 
 Modal.setAppElement("#root");
 
