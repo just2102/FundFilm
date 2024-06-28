@@ -7,7 +7,7 @@ import contractArtifact from "src/FundFilm.json";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { setAccount, setContract, setCurrency, setNetwork, setProvider, setSigner } from "src/Redux/web3slice";
 import styles from "src/styles/Header.module.css";
-import { networks } from "src/utils/const";
+import { networks, networksToCurrencies } from "src/utils/const";
 
 import NetworkModal from "./NetworkModal";
 
@@ -23,10 +23,13 @@ const WalletConnection = () => {
   const handleNetworkModalOpen = async () => {
     const currentlySelectedNetwork = await window.ethereum.networkVersion;
     if (currentlySelectedNetwork === "137") {
-      setChosenNetwork(networks.polygon);
+      setChosenNetwork(networks.Polygon);
     }
     if (currentlySelectedNetwork === "11155111") {
-      setChosenNetwork(networks.sepolia);
+      setChosenNetwork(networks.Sepolia);
+    }
+    if (currentlySelectedNetwork === "534352") {
+      setChosenNetwork(networks.Scroll);
     }
     setNetworkModalOpen(true);
   };
@@ -46,8 +49,8 @@ const WalletConnection = () => {
         dispatch(setAccount(account));
         dispatch(setSigner(signer));
         dispatch(setContract(contract));
-        dispatch(setNetwork(chosenNetwork === networks.polygon ? "POLYGON" : "SEPOLIA"));
-        dispatch(setCurrency(chosenNetwork === networks.polygon ? "MATIC" : "ETH"));
+        dispatch(setNetwork(networks[chosenNetwork]));
+        dispatch(setCurrency(networksToCurrencies[chosenNetwork]));
         navigate("/campaigns");
       } else throw new Error("Metamask not found");
     } catch (error) {

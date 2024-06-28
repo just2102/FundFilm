@@ -5,6 +5,7 @@ import githubIcon from "src/assets/github-mark-white.svg";
 import profile from "src/assets/profile.svg";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
 import styles from "src/styles/Sidebar.module.css";
+import { networks } from "src/utils/const";
 
 import AddCampaignModal from "./common/AddCampaignModal";
 
@@ -18,8 +19,7 @@ function Sidebar() {
     <>
       <div className={styles.sidebar}>
         {!account && <div></div>}
-        {network === "SEPOLIA" && <div>TESTNET</div>}
-        {network === "POLYGON" && <div>MAINNET</div>}
+        {(network === networks.Sepolia || network === "SEPOLIA") && <div>TESTNET</div>}
         {network === "UNSUPPORTED" && <div>UNSUPPORTED NETWORK</div>}
         {account && network !== "SEPOLIA" && (
           <img

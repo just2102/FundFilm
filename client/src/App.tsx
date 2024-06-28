@@ -43,7 +43,7 @@ function App() {
         dispatch(setAccount(account));
         dispatch(setSigner(signer));
         dispatch(setContract(contract));
-        dispatch(setNetwork(chosenNetwork.toUpperCase()));
+        dispatch(setNetwork(chosenNetwork));
         dispatch(setCurrency(networksToCurrencies[chosenNetwork]));
         navigate("/campaigns");
       } else throw new Error("Metamask not found");

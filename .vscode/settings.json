@@ -1,4 +1,5 @@
 {
   "search.useIgnoreFiles": true,
   "search.useParentIgnoreFiles": false,
+  "typescript.tsdk": "./client/node_modules/typescript/lib"
 }

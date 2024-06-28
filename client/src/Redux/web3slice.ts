@@ -31,6 +31,9 @@ export const disconnectRequest = createAsyncThunk("web3/disconnect", async (_, {
   dispatch(setCampaigns([]));
   dispatch(setCurrentlyDisplayedCampaign(null));
   dispatch(setMyCampaigns([]));
+  dispatch(setNetwork(null));
+  dispatch(setCurrency(null));
+  dispatch(setAccount(null));
 });
 
 export const web3Slice = createSlice({

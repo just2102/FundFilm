@@ -4,16 +4,19 @@ import { BrowserRouter } from "react-router-dom";
 
 import ReactDOM from "react-dom/client";
 import store from "src/Redux/store";
-
-import App from "./App";
+import { WagmiProvider } from "wagmi";
 
 import "src/styles/globals.css";
+import App from "./App";
+import { config } from "./config";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
-        <App />
+        <WagmiProvider config={config}>
+          <App />
+        </WagmiProvider>
       </Provider>
     </BrowserRouter>
   </React.StrictMode>,

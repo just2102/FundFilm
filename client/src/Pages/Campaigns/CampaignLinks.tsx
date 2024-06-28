@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { ethers } from "ethers";
@@ -68,7 +67,6 @@ const CampaignLinks = ({ campaigns }: Props) => {
       </>
     );
   });
-  useEffect(() => {}, []);
 
   return <>{campaignsMappedAsLinks}</>;
 };
