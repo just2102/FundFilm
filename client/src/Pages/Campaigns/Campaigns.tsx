@@ -5,6 +5,7 @@ import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
 
 import CampaignLinks from "./CampaignLinks";
+import styles from "./Campaigns.module.css";
 
 import Preloader from "../common/Preloader";
 
@@ -64,9 +65,9 @@ const Campaigns = () => {
   return (
     <>
       {isFetching && <Preloader />}
-      <div className='campaigns'>
-        <div className='campaigns_searchbar'>
-          <div className='campaign_searchbar_item'>
+      <div className={styles.campaigns}>
+        <div className={styles.campaigns_searchbar}>
+          <div className={styles.campaign_searchbar_item}>
             <input
               checked={showFinishedCampaigns}
               onChange={(e) => setShowFinishedCampaigns(e.target.checked)}
@@ -76,14 +77,14 @@ const Campaigns = () => {
             <label htmlFor='showFinished'>Show finished campaigns</label>
           </div>
 
-          <div className='campaign_searchbar_item'>
+          <div className={styles.campaign_searchbar_item}>
             <input
               placeholder='Search...'
               id='search'
               onChange={(e) => setSearchQuery(e.target.value)}
               type='search'
+              className={styles.search}
             />
-            {/* <img id={"searchImg"} src={searchIcon} alt="" /> */}
           </div>
         </div>
         {searchQuery && <CampaignLinks campaigns={filteredCampaigns} />}
