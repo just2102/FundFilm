@@ -1,20 +1,23 @@
 @font-face {
   font-family: "robotolight";
-  src: url("../fonts/roboto-light-webfont.woff2") format("woff2"),
+  src:
+    url("../fonts/roboto-light-webfont.woff2") format("woff2"),
     url("../fonts/roboto-light-webfont.woff") format("woff");
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: "robotomedium";
-  src: url("../fonts/roboto-medium-webfont.woff2") format("woff2"),
+  src:
+    url("../fonts/roboto-medium-webfont.woff2") format("woff2"),
     url("../fonts/roboto-medium-webfont.woff") format("woff");
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: "robotobold_condensed_italic";
-  src: url("../fonts/roboto-boldcondenseditalic-webfont.woff2") format("woff2"),
+  src:
+    url("../fonts/roboto-boldcondenseditalic-webfont.woff2") format("woff2"),
     url("../fonts/roboto-boldcondenseditalic-webfont.woff") format("woff");
   font-weight: normal;
   font-style: normal;
@@ -37,7 +40,7 @@ a {
   text-decoration: none;
 }
 a:hover {
-  color: rgb(126, 227, 173);
+  color: rgb(94, 211, 148);
 }
 
 * {
@@ -103,5 +106,4 @@ form input {
   color: teal;
   font-size: smaller;
   font-style: italic;
-  user-select: none;
 }

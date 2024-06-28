@@ -1,8 +1,8 @@
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { ethers } from "ethers";
+import styles from "src/Pages/Campaigns/Campaigns.module.css";
 
-import "../../styles/Campaigns.css";
 import { Campaign } from "../../types/campaignsTypes";
 import { unixToDate } from "../../utils/unixToDate";
 import CurrencyLogo from "../common/CurrencyLogo";
@@ -26,16 +26,16 @@ const CampaignLinks = ({ campaigns }: Props) => {
       <>
         <div
           key={campaignId}
-          className='campaign'
+          className={styles.campaign}
         >
           <NavLink
             to={`/campaigns/${campaignId}`}
             key={campaignId}
           >
-            <div className='campaign_title'>{title}</div>
-            <div className='campaign_description'>{formattedDescription}</div>
+            <div className={styles.campaign_title}>{title}</div>
+            <div className={styles.campaign_description}>{formattedDescription}</div>
             {image && (
-              <div className='campaign_image_preview'>
+              <div className={styles.campaign_image_preview}>
                 <img
                   src={image}
                   alt='image'
@@ -43,24 +43,20 @@ const CampaignLinks = ({ campaigns }: Props) => {
               </div>
             )}
           </NavLink>
-          <div className='campaign_meta'>
-            {hasWithdrawn ? (
-              <div className='campaign_meta_item deadline'>Finished</div>
-            ) : (
-              <div className='campaign_meta_item deadline'>Deadline: {deadline}</div>
-            )}
-            <div className='campaign_meta_item target'>
+          <div className={styles.campaign_meta}>
+            {hasWithdrawn ? <div className={styles.deadline}>Finished</div> : <div className={styles.deadline}>Deadline: {deadline}</div>}
+            <div className={styles.target}>
               Target: {target}
               <CurrencyLogo></CurrencyLogo>
             </div>
 
-            <div className='campaign_meta_item raised'>
+            <div className={styles.raised}>
               Raised: {amountCollected}
               <CurrencyLogo></CurrencyLogo>
             </div>
           </div>
 
-          <div className='campaign_getmoreinfo'>
+          <div className={styles.campaign_getmoreinfo}>
             <button onClick={() => navigate(`/campaigns/${campaignId}`)}>GET MORE INFO</button>
           </div>
         </div>

@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import Modal from "react-modal";
-import "src/styles/Campaigns.css";
 import { useDispatch } from "react-redux";
 
+import styles from "src/Pages/Campaigns/Campaigns.module.css";
 import { fetchMyCampaigns } from "src/Redux/campaignSlice";
 import { AppDispatch } from "src/Redux/store";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
@@ -31,7 +31,7 @@ function MyCampaigns() {
 
   return (
     <>
-      <div className='campaigns my'>
+      <div className={styles.campaigns}>
         {account ? (
           <button onClick={() => setModalIsOpen(!modalIsOpen)}>Start a campaign</button>
         ) : (

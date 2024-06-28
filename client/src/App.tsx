@@ -7,7 +7,7 @@ import { ethers } from "ethers";
 import { FundFilmAbi } from "./abi/FundFilm";
 import styles from "./app.module.css";
 import About from "./Pages/About/About";
-import Campaign from "./Pages/Campaigns/Campaign";
+import Campaign from "./Pages/Campaigns/Campaign/Campaign";
 import Campaigns from "./Pages/Campaigns/Campaigns";
 import Preloader from "./Pages/common/Preloader";
 import Header from "./Pages/Header";
