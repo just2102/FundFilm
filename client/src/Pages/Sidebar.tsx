@@ -1,10 +1,12 @@
 import { useState } from "react";
-import styles from "../styles/Sidebar.module.css";
-import profile from "../assets/profile.svg";
-import githubIcon from "../assets/github-mark-white.svg";
 import Modal from "react-modal";
+
+import githubIcon from "src/assets/github-mark-white.svg";
+import profile from "src/assets/profile.svg";
+import { useCustomSelector } from "src/Redux/useCustomSelector";
+import styles from "src/styles/Sidebar.module.css";
+
 import AddCampaignModal from "./common/AddCampaignModal";
-import { useCustomSelector } from "../Redux/useCustomSelector";
 
 function Sidebar() {
   const account = useCustomSelector().web3.account;
@@ -20,7 +22,10 @@ function Sidebar() {
         {network === "POLYGON" && <div>MAINNET</div>}
         {network === "UNSUPPORTED" && <div>UNSUPPORTED NETWORK</div>}
         {account && network !== "SEPOLIA" && (
-          <img src={profile} alt="profile" />
+          <img
+            src={profile}
+            alt='profile'
+          />
         )}
         <button
           disabled={!account}
@@ -30,11 +35,14 @@ function Sidebar() {
           START
         </button>
         <a
-          href="https://github.com/just2102/"
-          target="_blank"
-          rel="noopener noreferrer"
+          href='https://github.com/just2102/'
+          target='_blank'
+          rel='noopener noreferrer'
         >
-          <img src={githubIcon} alt="" />
+          <img
+            src={githubIcon}
+            alt=''
+          />
         </a>
       </div>
       <Modal

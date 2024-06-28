@@ -1,0 +1,142 @@
+.campaigns {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background-color: rgb(225, 225, 225);
+  color: black;
+}
+
+#search {
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  padding: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: 200ms;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.campaign {
+  display: flex;
+  width: 90%;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 16px;
+  /* pick the best background color */
+  background-color: rgb(225, 225, 225);
+  color: black;
+}
+
+.campaign h3 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+.campaign_title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.campaign_title h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+.campaign_title button {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #555;
+  transition: 200ms;
+}
+.campaign_title button:hover {
+  background-color: rgb(53, 56, 56);
+}
+
+.campaign_description {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 8px;
+}
+.campaign_image_preview {
+  width: fit-content;
+}
+.campaign_image_preview img {
+  width: 30%;
+  height: 30%;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1.5px solid teal;
+}
+.campaign_image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1.5px solid teal;
+}
+
+.campaign_meta {
+  display: grid;
+}
+
+.campaign_meta_item {
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+}
+
+.deadline {
+  grid-column: 1/2;
+  color: #838383;
+}
+.target {
+  grid-column: 1/2;
+}
+.raised {
+  grid-column: 2/3;
+  justify-self: end;
+}
+
+.addCampaignModal {
+  display: flex;
+  gap: 1rem;
+  padding: 20px;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  color: black;
+  background-color: rgb(225, 225, 225);
+}
+.addCampaignModal label {
+  font-style: italic;
+}
+.addCampaign_fieldRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.addCampaign_fieldColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.2rem;
+}
+.addCampaign_fieldColumn fieldset {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.addCampaign_fieldColumn fieldset legend {
+  font-style: italic;
+}

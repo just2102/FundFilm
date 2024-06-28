@@ -1,6 +1,6 @@
-import ethLogo from "../../assets/eth.svg";
-import maticLogo from "../../assets/matic.svg";
-import { useCustomSelector } from "../../Redux/useCustomSelector";
+import ethLogo from "src/assets/eth.svg";
+import maticLogo from "src/assets/matic.svg";
+import { useCustomSelector } from "src/Redux/useCustomSelector";
 
 const CurrencyLogo = () => {
   const currency = useCustomSelector().web3.currency;
@@ -8,14 +8,19 @@ const CurrencyLogo = () => {
   return (
     <>
       {currency === "ETH" && (
-        <img className="currencyLogo" id="ethLogo" src={ethLogo} alt="eth" />
+        <img
+          className='currencyLogo'
+          id='ethLogo'
+          src={ethLogo}
+          alt='eth'
+        />
       )}
       {currency === "MATIC" && (
         <img
-          className="currencyLogo"
-          id="maticLogo"
+          className='currencyLogo'
+          id='maticLogo'
           src={maticLogo}
-          alt="matic"
+          alt='matic'
         />
       )}
     </>

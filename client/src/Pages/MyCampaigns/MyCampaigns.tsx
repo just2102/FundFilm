@@ -1,14 +1,16 @@
 import { useEffect } from "react";
-import Modal from "react-modal";
 import { useState } from "react";
-import "../../styles/Campaigns.css";
+import Modal from "react-modal";
+import "src/styles/Campaigns.css";
 import { useDispatch } from "react-redux";
-import { fetchMyCampaigns } from "../../Redux/campaignSlice";
+
+import { fetchMyCampaigns } from "src/Redux/campaignSlice";
+import { AppDispatch } from "src/Redux/store";
+import { useCustomSelector } from "src/Redux/useCustomSelector";
+
 import CampaignLinks from "../Campaigns/CampaignLinks";
-import Preloader from "../common/Preloader";
 import AddCampaignModal from "../common/AddCampaignModal";
-import { useCustomSelector } from "../../Redux/useCustomSelector";
-import { AppDispatch } from "../../Redux/store";
+import Preloader from "../common/Preloader";
 
 function MyCampaigns() {
   const account = useCustomSelector().web3.account;
@@ -26,20 +28,17 @@ function MyCampaigns() {
   }, [account]);
 
   if (!contract) return <h2>Connect your wallet first!</h2>;
+
   return (
     <>
-      <div className="campaigns my">
+      <div className='campaigns my'>
         {account ? (
-          <button onClick={() => setModalIsOpen(!modalIsOpen)}>
-            Start a campaign
-          </button>
+          <button onClick={() => setModalIsOpen(!modalIsOpen)}>Start a campaign</button>
         ) : (
           <h3>Connect your wallet to start a new campaign!</h3>
         )}
 
-        {isFetching && (
-          <Preloader loadingText={"Looking for your campaigns..."} />
-        )}
+        {isFetching && <Preloader loadingText={"Looking for your campaigns..."} />}
         {myCampaigns && <CampaignLinks campaigns={myCampaigns} />}
       </div>
       <Modal

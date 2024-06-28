@@ -1,13 +1,15 @@
-import { SubmitHandler, useForm } from "react-hook-form";
-import { CampaignToAdd, startCampaign } from "../../Redux/campaignSlice";
 import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+
 import { ethers } from "ethers";
+import { CampaignToAdd, startCampaign } from "src/Redux/campaignSlice";
+import { fetchMyCampaigns } from "src/Redux/campaignSlice";
+import { useCustomDispatch } from "src/Redux/useCustomDispatch";
+import { useCustomSelector } from "src/Redux/useCustomSelector";
+import { ContractInteraction } from "src/types/ethersTypes";
+
 import EthInput from "./EthInput";
-import { fetchMyCampaigns } from "../../Redux/campaignSlice";
 import Preloader from "./Preloader";
-import { useCustomSelector } from "../../Redux/useCustomSelector";
-import { useCustomDispatch } from "../../Redux/useCustomDispatch";
-import { ContractInteraction } from "../../types/ethersTypes";
 
 export type FormValues = {
   title: string;
@@ -36,16 +38,12 @@ function AddCampaignModal() {
   const [currentBalance, setCurrentBalance] = useState(0);
   const getCurrentBalance = async () => {
     if (!provider || !account) return;
-    setCurrentBalance(
-      parseFloat(ethers.utils.formatEther(await provider.getBalance(account)))
-    );
+    setCurrentBalance(parseFloat(ethers.utils.formatEther(await provider.getBalance(account))));
   };
 
   const [imageOption, setImageOption] = useState("link");
 
-  const [addCampaignError, setAddCampaignError] = useState<string | undefined>(
-    undefined
-  );
+  const [addCampaignError, setAddCampaignError] = useState<string | undefined>(undefined);
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (!contract || !account) return;
     const { title, description, image, video, target, deadline } = data;
@@ -75,12 +73,16 @@ function AddCampaignModal() {
       getCurrentBalance();
     }
   }, [account, contract, provider]);
+
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="addCampaignModal">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='addCampaignModal'
+      >
         <h3>Start a campaign!</h3>
-        <div className="addCampaign_fieldColumn">
-          <label htmlFor="title">Your movie title</label>
+        <div className='addCampaign_fieldColumn'>
+          <label htmlFor='title'>Your movie title</label>
           <input
             {...register("title", {
               required: { value: true, message: "This field is required" },
@@ -89,19 +91,15 @@ function AddCampaignModal() {
                 message: "Title cannot be longer than 40 symbols",
               },
             })}
-            id="title"
-            type="text"
-            placeholder="Ascending..."
+            id='title'
+            type='text'
+            placeholder='Ascending...'
           />
-          {errors.title && (
-            <span className="form_error">
-              {errors.title.message?.toString()}
-            </span>
-          )}
+          {errors.title && <span className='form_error'>{errors.title.message?.toString()}</span>}
         </div>
 
-        <div className="addCampaign_fieldColumn">
-          <label htmlFor="description">Describe your movie</label>
+        <div className='addCampaign_fieldColumn'>
+          <label htmlFor='description'>Describe your movie</label>
           <textarea
             cols={30}
             rows={10}
@@ -116,14 +114,10 @@ function AddCampaignModal() {
                 message: "Description cannot be longer than 1000 symbols",
               },
             })}
-            name="description"
-            id="description"
+            name='description'
+            id='description'
           ></textarea>
-          {errors.description && (
-            <span className="form_error">
-              {errors.description.message?.toString()}
-            </span>
-          )}
+          {errors.description && <span className='form_error'>{errors.description.message?.toString()}</span>}
         </div>
 
         <EthInput
@@ -135,24 +129,20 @@ function AddCampaignModal() {
           balanceCheck={false}
         ></EthInput>
 
-        <div className="addCampaign_fieldColumn">
-          <label htmlFor="deadline">Deadline (choose carefully!)</label>
+        <div className='addCampaign_fieldColumn'>
+          <label htmlFor='deadline'>Deadline (choose carefully!)</label>
           <input
             {...register("deadline", {
               required: { value: true, message: "This field is required" },
             })}
-            id="deadline"
-            type="date"
+            id='deadline'
+            type='date'
           />
-          {errors.deadline && (
-            <span className="form_error">
-              {errors.deadline.message?.toString()}
-            </span>
-          )}
+          {errors.deadline && <span className='form_error'>{errors.deadline.message?.toString()}</span>}
         </div>
 
-        <div className="addCampaign_fieldColumn">
-          <fieldset id="newCampaignImage">
+        <div className='addCampaign_fieldColumn'>
+          <fieldset id='newCampaignImage'>
             <legend>Image options</legend>
             {/* <input 
                 {...register("imageOption",)}
@@ -169,47 +159,50 @@ function AddCampaignModal() {
                 const target = e.target as HTMLInputElement;
                 setImageOption(target.value);
               }}
-              id="linkImage"
-              type="radio"
-              name="imageOption"
-              value="link"
+              id='linkImage'
+              type='radio'
+              name='imageOption'
+              value='link'
               checked={imageOption === "link"}
             />
-            <label htmlFor="linkImage">Link</label>
+            <label htmlFor='linkImage'>Link</label>
 
             {imageOption === "upload" && (
-              <input disabled {...register("image")} id="image" type="file" />
+              <input
+                disabled
+                {...register("image")}
+                id='image'
+                type='file'
+              />
             )}
 
             {imageOption === "link" && (
               <input
                 {...register("image")}
-                id="image"
-                type="text"
-                placeholder="https://..."
+                id='image'
+                type='text'
+                placeholder='https://...'
               />
             )}
           </fieldset>
-          {errors.image && (
-            <span className="form_error">
-              {errors.image.message?.toString()}
-            </span>
-          )}
+          {errors.image && <span className='form_error'>{errors.image.message?.toString()}</span>}
         </div>
 
-        <div className="addCampaign_fieldColumn">
-          <label htmlFor="video">Teaser link (optional)</label>
-          <input {...register("video")} id="video" type="text" />
+        <div className='addCampaign_fieldColumn'>
+          <label htmlFor='video'>Teaser link (optional)</label>
+          <input
+            {...register("video")}
+            id='video'
+            type='text'
+          />
         </div>
         {isStartingCampaign && <Preloader />}
 
-        {addCampaignError && (
-          <span className="form_error">{addCampaignError}</span>
-        )}
+        {addCampaignError && <span className='form_error'>{addCampaignError}</span>}
         <button
           disabled={isStartingCampaign}
           className={isStartingCampaign ? "button_disabled" : "button_enabled"}
-          type="submit"
+          type='submit'
         >
           Start!
         </button>

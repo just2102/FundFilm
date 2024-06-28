@@ -1,5 +1,6 @@
 import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
-import { useCustomSelector } from "../../Redux/useCustomSelector";
+
+import { useCustomSelector } from "src/Redux/useCustomSelector";
 
 interface Props {
   label: string;
@@ -11,27 +12,21 @@ interface Props {
   defaultValue?: number;
 }
 
-const EthInput = ({
-  label,
-  message,
-  register,
-  errors,
-  currentBalance,
-  balanceCheck,
-  defaultValue,
-}: Props) => {
+const EthInput = ({ label, message, register, errors, currentBalance, balanceCheck, defaultValue }: Props) => {
   const currency = useCustomSelector().web3.currency;
   const validateBalance = (value: number) => {
     if (!currentBalance) return true;
     if (balanceCheck && value > currentBalance) {
       return "Insufficient funds";
     }
+
     return true;
   };
+
   return (
     <>
       <label htmlFor={label}>{message}</label>
-      <div className="addCampaign_fieldRow">
+      <div className='addCampaign_fieldRow'>
         <input
           defaultValue={defaultValue}
           {...register(`${label}`, {
@@ -40,21 +35,22 @@ const EthInput = ({
             max: { value: 50000, message: "Please provide a correct value" },
             validate: validateBalance,
           })}
-          step="any"
+          step='any'
           id={label}
-          type="number"
-          placeholder="50..."
+          type='number'
+          placeholder='50...'
         />
-        <select name="unit" id="unit">
-          <option value="eth">{currency}</option>
+        <select
+          name='unit'
+          id='unit'
+        >
+          <option value='eth'>{currency}</option>
         </select>
       </div>
       {errors[label] && (
-        <span className="form_error">
+        <span className='form_error'>
           {errors[label]?.message?.toString()}
-          {label === "amount" && errors.balance && (
-            <span>{errors.balance.message?.toString()}</span>
-          )}
+          {label === "amount" && errors.balance && <span>{errors.balance.message?.toString()}</span>}
           {/* <span>Available: {currentBalance} ETH</span> */}
         </span>
       )}

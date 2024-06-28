@@ -1,20 +1,15 @@
 import { useState } from "react";
 import Modal from "react-modal";
-import { ethers } from "ethers";
 import { useNavigate } from "react-router-dom";
-import styles from "../../styles/Header.module.css";
-import { useCustomDispatch } from "../../Redux/useCustomDispatch";
-import contractArtifact from "../../FundFilm.json";
-import {
-  setAccount,
-  setContract,
-  setCurrency,
-  setNetwork,
-  setProvider,
-  setSigner,
-} from "../../Redux/web3slice";
+
+import { ethers } from "ethers";
+import contractArtifact from "src/FundFilm.json";
+import { useCustomDispatch } from "src/Redux/useCustomDispatch";
+import { setAccount, setContract, setCurrency, setNetwork, setProvider, setSigner } from "src/Redux/web3slice";
+import styles from "src/styles/Header.module.css";
+import { networks } from "src/utils/const";
+
 import NetworkModal from "./NetworkModal";
-import { networks } from "../../utils/const";
 
 Modal.setAppElement("#root");
 
@@ -46,21 +41,13 @@ const WalletConnection = () => {
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = web3Provider.getSigner();
         const account = await signer.getAddress();
-        const contract = new ethers.Contract(
-          chosenNetwork,
-          contractArtifact.abi,
-          signer
-        );
+        const contract = new ethers.Contract(chosenNetwork, contractArtifact.abi, signer);
         dispatch(setProvider(web3Provider));
         dispatch(setAccount(account));
         dispatch(setSigner(signer));
         dispatch(setContract(contract));
-        dispatch(
-          setNetwork(chosenNetwork === networks.polygon ? "POLYGON" : "SEPOLIA")
-        );
-        dispatch(
-          setCurrency(chosenNetwork === networks.polygon ? "MATIC" : "ETH")
-        );
+        dispatch(setNetwork(chosenNetwork === networks.polygon ? "POLYGON" : "SEPOLIA"));
+        dispatch(setCurrency(chosenNetwork === networks.polygon ? "MATIC" : "ETH"));
         navigate("/campaigns");
       } else throw new Error("Metamask not found");
     } catch (error) {

@@ -1,27 +1,25 @@
 import { ethers } from "ethers";
+
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import {
-  donateToCampaign,
-  editCampaign,
-  extendDeadline,
-  fetchCampaignById,
-  withdrawFromCampaign,
-} from "../../Redux/campaignSlice";
+
 import "../../styles/Campaigns.css";
-import { unixToDate } from "../../utils/unixToDate";
-import Preloader from "../common/Preloader";
-import Modal from "react-modal";
 import { SubmitHandler, useForm } from "react-hook-form";
-import EthInput from "../common/EthInput";
+import Modal from "react-modal";
 import ReactPlayer from "react-player";
-import { dateToUnix } from "../../utils/dateToUnix";
-import editIcon from "../../assets/edit.svg";
-import CurrencyLogo from "../common/CurrencyLogo";
+import { useParams } from "react-router-dom";
+
 import { Snackbar, Alert } from "@mui/material";
-import { useCustomSelector } from "../../Redux/useCustomSelector";
+
+import editIcon from "../../assets/edit.svg";
+import { donateToCampaign, editCampaign, extendDeadline, fetchCampaignById, withdrawFromCampaign } from "../../Redux/campaignSlice";
 import { useCustomDispatch } from "../../Redux/useCustomDispatch";
+import { useCustomSelector } from "../../Redux/useCustomSelector";
 import { ContractInteraction } from "../../types/ethersTypes";
+import { dateToUnix } from "../../utils/dateToUnix";
+import { unixToDate } from "../../utils/unixToDate";
+import CurrencyLogo from "../common/CurrencyLogo";
+import EthInput from "../common/EthInput";
+import Preloader from "../common/Preloader";
 
 type DonateFormValues = {
   amount: string;
@@ -40,9 +38,7 @@ const DonateModal = () => {
 
   const getCurrentBalance = async () => {
     if (!provider || !account) return;
-    setCurrentBalance(
-      parseFloat(ethers.utils.formatEther(await provider.getBalance(account)))
-    );
+    setCurrentBalance(parseFloat(ethers.utils.formatEther(await provider.getBalance(account))));
   };
 
   const {
@@ -60,6 +56,7 @@ const DonateModal = () => {
     const amount = ethers.utils.parseEther(data.amount);
     if (parseFloat(data.amount) > currentBalance) {
       setBalanceError("Insufficient funds");
+
       return;
     }
     setBalanceError("");
@@ -70,7 +67,7 @@ const DonateModal = () => {
           contract: contract,
           campaignId: campaignId,
           amount: amount,
-        })
+        }),
       );
     }
   };
@@ -79,9 +76,13 @@ const DonateModal = () => {
     getCurrentBalance();
   }, [contract, account]);
   if (!campaign) return null;
+
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="donateModal">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='donateModal'
+      >
         <div>
           <h3>Donate to campaign</h3>
           <h4>{campaign.title}</h4>
@@ -98,7 +99,7 @@ const DonateModal = () => {
         <button
           disabled={isDonating}
           className={isDonating ? "button_disabled" : "button_enabled"}
-          type="submit"
+          type='submit'
         >
           Donate
         </button>
@@ -119,14 +120,10 @@ const ExtendModal = () => {
   const isTransacting = useCustomSelector().campaigns.isTransacting;
 
   const [currentBalance, setCurrentBalance] = useState(0);
-  const [balanceError, setBalanceError] = useState<string | undefined>(
-    undefined
-  );
+  const [balanceError, setBalanceError] = useState<string | undefined>(undefined);
   const getCurrentBalance = async () => {
     if (!provider || !account) return;
-    setCurrentBalance(
-      parseFloat(ethers.utils.formatEther(await provider.getBalance(account)))
-    );
+    setCurrentBalance(parseFloat(ethers.utils.formatEther(await provider.getBalance(account))));
   };
 
   const campaign = useCustomSelector().campaigns.currentlyDisplayedCampaign;
@@ -144,15 +141,14 @@ const ExtendModal = () => {
     }
     const newDeadline = dateToUnix(data.newDeadline);
     const costToExtend = ethers.utils.parseEther(expectedCost.toString());
-    const response = await dispatch(
-      extendDeadline({ contract, campaignId, newDeadline, costToExtend })
-    );
+    const response = await dispatch(extendDeadline({ contract, campaignId, newDeadline, costToExtend }));
     const isSuccessResponse = response.payload === undefined;
     if (isSuccessResponse) return;
 
     const ethersResponsePayload = response.payload as ContractInteraction;
     if (ethersResponsePayload.error) {
       setBalanceError(ethersResponsePayload.reason);
+
       return;
     }
   };
@@ -160,9 +156,7 @@ const ExtendModal = () => {
 
   const getExpectedCost = () => {
     if (!campaign) return;
-    const campaignTarget = parseFloat(
-      ethers.utils.formatEther(campaign.target)
-    );
+    const campaignTarget = parseFloat(ethers.utils.formatEther(campaign.target));
     // count expected cost (service fee is 2% of campaign target)
     const cost = campaignTarget * 0.02;
     setExpectedCost(cost);
@@ -174,29 +168,34 @@ const ExtendModal = () => {
   }, [contract, account]);
 
   if (!campaign) return null;
+
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="donateModal">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='donateModal'
+      >
         <h3>Extend campaign</h3>
         <h4>{campaign.title}</h4>
         <span>Current deadline: {unixToDate(Number(campaign.deadline))}</span>
         <p>
-          <label htmlFor="newDeadline">New deadline </label>
-          <input type="date" {...register("newDeadline")} />
+          <label htmlFor='newDeadline'>New deadline </label>
+          <input
+            type='date'
+            {...register("newDeadline")}
+          />
         </p>
         {isTransacting && <Preloader></Preloader>}
         <button
           disabled={isTransacting}
           className={isTransacting ? "button_disabled" : "button_enabled"}
-          type="submit"
+          type='submit'
         >
           Extend
         </button>
-        <span className="form_error">
-          This transaction is not free! Service fee included (2% of the target)
-        </span>
-        <span className="form_error">Expected cost: {expectedCost} ETH</span>
-        {balanceError && <span className="form_error">{balanceError}</span>}
+        <span className='form_error'>This transaction is not free! Service fee included (2% of the target)</span>
+        <span className='form_error'>Expected cost: {expectedCost} ETH</span>
+        {balanceError && <span className='form_error'>{balanceError}</span>}
       </form>
     </>
   );
@@ -244,12 +243,16 @@ const EditModal = () => {
     dispatch(editCampaign({ contract, campaignId, newCampaignData }));
   };
   if (!campaign) return <h2>Connect your wallet first!</h2>;
+
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="addCampaignModal">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='addCampaignModal'
+      >
         <h3>Edit "{campaign.title}"</h3>
-        <div className="addCampaign_fieldColumn">
-          <label htmlFor="title">New title</label>
+        <div className='addCampaign_fieldColumn'>
+          <label htmlFor='title'>New title</label>
           <input
             defaultValue={campaign.title}
             {...register("title", {
@@ -259,19 +262,15 @@ const EditModal = () => {
                 message: "Title cannot be longer than 40 symbols",
               },
             })}
-            id="title"
-            type="text"
-            placeholder="Ascending..."
+            id='title'
+            type='text'
+            placeholder='Ascending...'
           />
-          {errors.title && (
-            <span className="form_error">
-              {errors.title.message?.toString()}
-            </span>
-          )}
+          {errors.title && <span className='form_error'>{errors.title.message?.toString()}</span>}
         </div>
 
-        <div className="addCampaign_fieldColumn">
-          <label htmlFor="description">New description</label>
+        <div className='addCampaign_fieldColumn'>
+          <label htmlFor='description'>New description</label>
           <textarea
             defaultValue={campaign.description}
             cols={30}
@@ -287,14 +286,10 @@ const EditModal = () => {
                 message: "Description cannot be longer than 1000 symbols",
               },
             })}
-            name="description"
-            id="description"
+            name='description'
+            id='description'
           ></textarea>
-          {errors.description && (
-            <span className="form_error">
-              {errors.description.message?.toString()}
-            </span>
-          )}
+          {errors.description && <span className='form_error'>{errors.description.message?.toString()}</span>}
         </div>
 
         <EthInput
@@ -306,8 +301,8 @@ const EditModal = () => {
           defaultValue={parseFloat(ethers.utils.formatEther(campaign.target))}
         />
 
-        <div className="addCampaign_fieldColumn">
-          <fieldset id="newCampaignImage">
+        <div className='addCampaign_fieldColumn'>
+          <fieldset id='newCampaignImage'>
             <legend>Image options</legend>
             {/* <input 
                 {...register("imageOption",)}
@@ -324,49 +319,50 @@ const EditModal = () => {
                 const target = e.target as HTMLInputElement;
                 setImageOption(target.value);
               }}
-              id="linkImage"
-              type="radio"
-              name="imageOption"
-              value="link"
+              id='linkImage'
+              type='radio'
+              name='imageOption'
+              value='link'
               checked={imageOption === "link"}
             />
-            <label htmlFor="linkImage">Link</label>
+            <label htmlFor='linkImage'>Link</label>
 
             {imageOption === "upload" && (
-              <input disabled {...register("image")} id="image" type="file" />
+              <input
+                disabled
+                {...register("image")}
+                id='image'
+                type='file'
+              />
             )}
 
             {imageOption === "link" && (
               <input
                 defaultValue={campaign.image}
                 {...register("image")}
-                id="image"
-                type="text"
-                placeholder="https://..."
+                id='image'
+                type='text'
+                placeholder='https://...'
               />
             )}
           </fieldset>
-          {errors.image && (
-            <span className="form_error">
-              {errors.image.message?.toString()}
-            </span>
-          )}
+          {errors.image && <span className='form_error'>{errors.image.message?.toString()}</span>}
         </div>
 
-        <div className="addCampaign_fieldColumn">
-          <label htmlFor="video">Teaser link (optional)</label>
+        <div className='addCampaign_fieldColumn'>
+          <label htmlFor='video'>Teaser link (optional)</label>
           <input
             defaultValue={campaign.video}
             {...register("video")}
-            id="video"
-            type="text"
+            id='video'
+            type='text'
           />
         </div>
         {isTransacting && <Preloader />}
         <button
           disabled={isTransacting}
           className={isTransacting ? "button_disabled" : "button_enabled"}
-          type="submit"
+          type='submit'
         >
           Edit!
         </button>
@@ -384,9 +380,7 @@ const Campaign = () => {
   const contract = useCustomSelector().web3.contract;
   const isOwner = account === campaign?.owner;
 
-  const hasEnded =
-    Number(campaign?.deadline) * 1000 < Date.now() ||
-    campaign?.hasWithdrawn === true;
+  const hasEnded = Number(campaign?.deadline) * 1000 < Date.now() || campaign?.hasWithdrawn === true;
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -394,14 +388,7 @@ const Campaign = () => {
   });
 
   const dispatch = useCustomDispatch();
-  let title,
-    description,
-    video,
-    image,
-    hasWithdrawn,
-    target,
-    amountCollected,
-    deadline;
+  let title, description, video, image, hasWithdrawn, target, amountCollected, deadline;
   if (campaign) {
     // owner = campaign.owner;
     title = campaign.title;
@@ -419,18 +406,12 @@ const Campaign = () => {
     setDonateModalOpen(true);
   };
 
-  const [withdrawError, setWithdrawError] = useState<string | undefined>(
-    undefined
-  );
+  const [withdrawError, setWithdrawError] = useState<string | undefined>(undefined);
   const onWithdraw = async () => {
     if (contract && campaignId) {
       try {
-        const response = await dispatch(
-          withdrawFromCampaign({ contract, campaignId: Number(campaignId) })
-        );
-        const parsedResponsePayload = JSON.parse(
-          JSON.stringify(response.payload)
-        ) as ContractInteraction;
+        const response = await dispatch(withdrawFromCampaign({ contract, campaignId: Number(campaignId) }));
+        const parsedResponsePayload = JSON.parse(JSON.stringify(response.payload)) as ContractInteraction;
         if (!parsedResponsePayload.error) {
           setWithdrawError(undefined);
         } else {
@@ -456,6 +437,7 @@ const Campaign = () => {
         open: true,
         message: "This campaign has already finished!",
       });
+
       return;
     }
     setEditModalOpen(true);
@@ -483,52 +465,62 @@ const Campaign = () => {
     }
   }, [campaignId, contract]);
   if (!contract) return null;
+
   return (
     <>
       {!campaign && <Preloader />}
       {campaign && (
-        <div className="campaign">
-          <div className="campaign_title">
+        <div className='campaign'>
+          <div className='campaign_title'>
             <h2>{title}</h2>
             {isOwner && (
               <button onClick={onEdit}>
                 {" "}
-                <img src={editIcon} alt="" />{" "}
+                <img
+                  src={editIcon}
+                  alt=''
+                />{" "}
               </button>
             )}
           </div>
-          <div className="campaign_description">{description}</div>
-          <div className="campaign_image">
-            {image && <img src={image} alt="image" />}
+          <div className='campaign_description'>{description}</div>
+          <div className='campaign_image'>
+            {image && (
+              <img
+                src={image}
+                alt='image'
+              />
+            )}
           </div>
-          <div className="campaign_video">
-            {video && <ReactPlayer url={video} controls={true} />}
+          <div className='campaign_video'>
+            {video && (
+              <ReactPlayer
+                url={video}
+                controls={true}
+              />
+            )}
           </div>
 
-          <div className="campaign_meta">
-            <div className="campaign_meta_item deadline">
+          <div className='campaign_meta'>
+            <div className='campaign_meta_item deadline'>
               Deadline: {deadline}
               {isOwner && <button onClick={onExtend}>EXTEND</button>}
             </div>
-            <div className="campaign_meta_item target">
+            <div className='campaign_meta_item target'>
               Target: {target}
               <CurrencyLogo></CurrencyLogo>
             </div>
-            <div className="campaign_meta_item raised">
+            <div className='campaign_meta_item raised'>
               Raised: {amountCollected}
               <CurrencyLogo></CurrencyLogo>
             </div>
           </div>
 
-          <div className="campaign_donate">
-            {!isOwner && <button onClick={onDonate}>DONATE</button>}
-          </div>
+          <div className='campaign_donate'>{!isOwner && <button onClick={onDonate}>DONATE</button>}</div>
           {isOwner && !hasWithdrawn && (
-            <div className="campaign_withdraw">
+            <div className='campaign_withdraw'>
               <button onClick={onWithdraw}>WITHDRAW</button>
-              {withdrawError && (
-                <span className="form_error">{withdrawError}</span>
-              )}
+              {withdrawError && <span className='form_error'>{withdrawError}</span>}
             </div>
           )}
         </div>
@@ -563,7 +555,7 @@ const Campaign = () => {
         onClose={() => setSnackbar({ open: false, message: "" })}
         open={snackbar.open}
       >
-        <Alert severity="info">{snackbar.message}</Alert>
+        <Alert severity='info'>{snackbar.message}</Alert>
       </Snackbar>
     </>
   );

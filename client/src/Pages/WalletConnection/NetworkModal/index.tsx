@@ -1,6 +1,8 @@
 import Modal from "react-modal";
+
+import { networks } from "src/utils/const";
+
 import styles from "./NetworkModal.module.css";
-import { networks } from "../../../utils/const";
 
 interface Props {
   isOpen: boolean;
@@ -10,13 +12,7 @@ interface Props {
   handleConnectWallet: () => void;
 }
 
-const NetworkModal = ({
-  isOpen,
-  onRequestClose,
-  chosenNetwork,
-  setChosenNetwork,
-  handleConnectWallet,
-}: Props) => {
+const NetworkModal = ({ isOpen, onRequestClose, chosenNetwork, setChosenNetwork, handleConnectWallet }: Props) => {
   const handleSelectNetwork = async (network: string) => {
     if (network === networks.Polygon) {
       try {
@@ -138,9 +134,7 @@ const NetworkModal = ({
           {Object.keys(networks).map((network) => (
             <div
               key={network}
-              className={`${styles.network} ${
-                chosenNetwork === networks[network] ? styles.chosen : ""
-              }   `}
+              className={`${styles.network} ${chosenNetwork === networks[network] ? styles.chosen : ""}   `}
               onClick={() => handleSelectNetwork(networks[network])}
             >
               <span>{network}</span>

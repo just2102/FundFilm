@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+
+import SnackbarNotification from "./SnackbarNotification";
 import WalletConnection from "./WalletConnection";
-import styles from "../styles/Header.module.css";
+
 import arrowDownConnected from "../assets/arrowdown-connected.svg";
 import copyIcon from "../assets/copy.svg";
 import logoutIcon from "../assets/logout.svg";
-import { useCustomSelector } from "../Redux/useCustomSelector";
 import { useCustomDispatch } from "../Redux/useCustomDispatch";
+import { useCustomSelector } from "../Redux/useCustomSelector";
 import { disconnectRequest } from "../Redux/web3slice";
-import SnackbarNotification from "./SnackbarNotification";
+import styles from "../styles/Header.module.css";
 
 const Header = () => {
   const account = useCustomSelector().web3.account;
@@ -31,6 +33,7 @@ const Header = () => {
     const first = address.substring(0, 4);
     const second = "...";
     const third = address.substring(address.length - 4);
+
     return first + second + third;
   };
 
@@ -39,7 +42,7 @@ const Header = () => {
       <SnackbarNotification
         open={copySnackbarOpen}
         onClose={() => setCopySnackbarOpen(false)}
-        message="Address copied"
+        message='Address copied'
       />
       <nav className={styles.nav}>
         <NavLink to={"/campaigns"}>Campaigns</NavLink>
@@ -56,19 +59,28 @@ const Header = () => {
             <img
               className={styles.arrowDown}
               src={arrowDownConnected}
-              alt="arrowDown"
+              alt='arrowDown'
             />
             {toggleDrawer && (
               <div className={styles.drawer}>
-                <div onClick={handleCopy} className={styles.drawer_action}>
-                  <img src={copyIcon} alt="copyAddress" />
+                <div
+                  onClick={handleCopy}
+                  className={styles.drawer_action}
+                >
+                  <img
+                    src={copyIcon}
+                    alt='copyAddress'
+                  />
                   <span>Copy</span>
                 </div>
                 <div
                   onClick={handleDisconnect}
                   className={styles.drawer_action}
                 >
-                  <img src={logoutIcon} alt="logout" />
+                  <img
+                    src={logoutIcon}
+                    alt='logout'
+                  />
                   <span>Disconnect</span>
                 </div>
               </div>

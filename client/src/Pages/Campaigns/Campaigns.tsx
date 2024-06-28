@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
-import { fetchCampaignById, fetchCampaigns } from "../../Redux/campaignSlice";
-import "../../styles/Campaigns.css";
-import Preloader from "../common/Preloader";
+import { useState, useEffect } from "react";
+
+import { fetchCampaigns, fetchCampaignById } from "src/Redux/campaignSlice";
+import { useCustomDispatch } from "src/Redux/useCustomDispatch";
+import { useCustomSelector } from "src/Redux/useCustomSelector";
+
 import CampaignLinks from "./CampaignLinks";
-import { useCustomDispatch } from "../../Redux/useCustomDispatch";
-import { useCustomSelector } from "../../Redux/useCustomSelector";
+
+import Preloader from "../common/Preloader";
 
 const Campaigns = () => {
   const contract = useCustomSelector().web3.contract;
-  //   const navigate = useNavigate();
   const dispatch = useCustomDispatch();
 
   const allCampaigns = useCustomSelector().campaigns.campaigns;
@@ -16,10 +17,7 @@ const Campaigns = () => {
 
   const [showFinishedCampaigns, setShowFinishedCampaigns] = useState(true);
   const ongoingCampaigns = allCampaigns.filter((campaign) => {
-    return (
-      campaign.hasWithdrawn === false &&
-      campaign.deadline.toNumber() * 1000 > Date.now()
-    );
+    return campaign.hasWithdrawn === false && campaign.deadline.toNumber() * 1000 > Date.now();
   });
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,37 +26,19 @@ const Campaigns = () => {
   });
 
   if (contract) {
-    contract.on(
-      "CampaignStarted",
-      (
-        owner,
-        campaignId,
-        title,
-        description,
-        target,
-        deadline,
-        image,
-        video
-      ) => {
-        dispatch(fetchCampaigns({ contract }));
-      }
-    );
+    contract.on("CampaignStarted", (owner, campaignId, title, description, target, deadline, image, video) => {
+      dispatch(fetchCampaigns({ contract }));
+    });
   }
   if (contract) {
-    contract.on(
-      "CampaignEdited",
-      (title, description, target, image, video) => {
-        dispatch(fetchCampaigns({ contract }));
-      }
-    );
+    contract.on("CampaignEdited", (title, description, target, image, video) => {
+      dispatch(fetchCampaigns({ contract }));
+    });
   }
   if (contract) {
-    contract.on(
-      "WithdrewFromCampaign",
-      (campaignId, owner, amountWithdrawn) => {
-        dispatch(fetchCampaignById({ contract, campaignId }));
-      }
-    );
+    contract.on("WithdrewFromCampaign", (campaignId, owner, amountWithdrawn) => {
+      dispatch(fetchCampaignById({ contract, campaignId }));
+    });
   }
   if (contract) {
     // listen to DonatedToCampaign event and refetch the campaign that was donated to
@@ -68,12 +48,9 @@ const Campaigns = () => {
   }
   if (contract) {
     // listen to CampaignDeadlineExtended event and refetch the campaign that was extended
-    contract.on(
-      "CampaignDeadlineExtended",
-      (campaignId, newDeadline, feePaid) => {
-        dispatch(fetchCampaignById({ contract, campaignId }));
-      }
-    );
+    contract.on("CampaignDeadlineExtended", (campaignId, newDeadline, feePaid) => {
+      dispatch(fetchCampaignById({ contract, campaignId }));
+    });
   }
 
   useEffect(() => {
@@ -83,40 +60,37 @@ const Campaigns = () => {
   }, [contract]);
 
   if (!contract) return <h2>Connect your wallet first!</h2>;
+
   return (
     <>
       {isFetching && <Preloader />}
-      <div className="campaigns">
-        <div className="campaigns_searchbar">
-          <div className="campaign_searchbar_item">
+      <div className='campaigns'>
+        <div className='campaigns_searchbar'>
+          <div className='campaign_searchbar_item'>
             <input
               checked={showFinishedCampaigns}
               onChange={(e) => setShowFinishedCampaigns(e.target.checked)}
-              id="showFinished"
-              type="checkbox"
+              id='showFinished'
+              type='checkbox'
             />
-            <label htmlFor="showFinished">Show finished campaigns</label>
+            <label htmlFor='showFinished'>Show finished campaigns</label>
           </div>
 
-          <div className="campaign_searchbar_item">
+          <div className='campaign_searchbar_item'>
             <input
-              placeholder="Search..."
-              id="search"
+              placeholder='Search...'
+              id='search'
               onChange={(e) => setSearchQuery(e.target.value)}
-              type="search"
+              type='search'
             />
             {/* <img id={"searchImg"} src={searchIcon} alt="" /> */}
           </div>
         </div>
         {searchQuery && <CampaignLinks campaigns={filteredCampaigns} />}
 
-        {!searchQuery && showFinishedCampaigns && allCampaigns.length && (
-          <CampaignLinks campaigns={allCampaigns} />
-        )}
+        {!searchQuery && showFinishedCampaigns && allCampaigns.length && <CampaignLinks campaigns={allCampaigns} />}
 
-        {!searchQuery && !showFinishedCampaigns && (
-          <CampaignLinks campaigns={ongoingCampaigns} />
-        )}
+        {!searchQuery && !showFinishedCampaigns && <CampaignLinks campaigns={ongoingCampaigns} />}
       </div>
     </>
   );

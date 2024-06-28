@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
+
 import { Campaign } from "../types/campaignsTypes";
 
 interface CampaignState {
@@ -29,55 +30,49 @@ const initialState: CampaignState = {
 interface FetchCampaignsArgs {
   contract: ethers.Contract;
 }
-export const fetchCampaigns = createAsyncThunk(
-  "fetchCampaigns",
-  async ({ contract }: FetchCampaignsArgs, { dispatch }) => {
-    dispatch(toggleIsFetching());
-    try {
-      const numberOfCampaigns = await contract.numberOfCampaigns();
-      const campaignsData = [];
-      for (let i = 0; i < numberOfCampaigns; i++) {
-        const campaign = await contract.campaigns(i);
-        campaignsData.push(campaign);
-      }
-      if (campaignsData.length > 0) {
-        dispatch(setCampaigns(campaignsData));
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      dispatch(toggleIsFetching());
+export const fetchCampaigns = createAsyncThunk("fetchCampaigns", async ({ contract }: FetchCampaignsArgs, { dispatch }) => {
+  dispatch(toggleIsFetching());
+  try {
+    const numberOfCampaigns = await contract.numberOfCampaigns();
+    const campaignsData = [];
+    for (let i = 0; i < numberOfCampaigns; i++) {
+      const campaign = await contract.campaigns(i);
+      campaignsData.push(campaign);
     }
+    if (campaignsData.length > 0) {
+      dispatch(setCampaigns(campaignsData));
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    dispatch(toggleIsFetching());
   }
-);
+});
 
 interface FetchMyCampaignsArgs {
   contract: ethers.Contract;
   account: string;
 }
-export const fetchMyCampaigns = createAsyncThunk(
-  "fetchMyCampaigns",
-  async ({ contract, account }: FetchMyCampaignsArgs, { dispatch }) => {
-    dispatch(toggleIsFetching());
-    try {
-      const numberOfCampaigns = await contract.numberOfCampaigns();
-      const myCampaignsData = [];
-      for (let i = 0; i < numberOfCampaigns; i++) {
-        const campaign = await contract.campaigns(i);
-        if (campaign.owner === account) {
-          myCampaignsData.push(campaign);
-        }
+export const fetchMyCampaigns = createAsyncThunk("fetchMyCampaigns", async ({ contract, account }: FetchMyCampaignsArgs, { dispatch }) => {
+  dispatch(toggleIsFetching());
+  try {
+    const numberOfCampaigns = await contract.numberOfCampaigns();
+    const myCampaignsData = [];
+    for (let i = 0; i < numberOfCampaigns; i++) {
+      const campaign = await contract.campaigns(i);
+      if (campaign.owner === account) {
+        myCampaignsData.push(campaign);
       }
-      if (myCampaignsData.length > 0) {
-        dispatch(setMyCampaigns(myCampaignsData));
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      dispatch(toggleIsFetching());
     }
+    if (myCampaignsData.length > 0) {
+      dispatch(setMyCampaigns(myCampaignsData));
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    dispatch(toggleIsFetching());
   }
-);
+});
 
 interface FetchCampaignByIdArgs {
   contract: ethers.Contract;
@@ -98,7 +93,7 @@ export const fetchCampaignById = createAsyncThunk(
     } finally {
       dispatch(toggleIsFetching());
     }
-  }
+  },
 );
 
 interface DonateToCampaignArgs {
@@ -108,10 +103,7 @@ interface DonateToCampaignArgs {
 }
 export const donateToCampaign = createAsyncThunk(
   "donateToCampaign",
-  async (
-    { contract, campaignId, amount }: DonateToCampaignArgs,
-    { dispatch }
-  ) => {
+  async ({ contract, campaignId, amount }: DonateToCampaignArgs, { dispatch }) => {
     dispatch(toggleIsDonating());
     try {
       const campaignIdAsNumber = Number(campaignId);
@@ -127,7 +119,7 @@ export const donateToCampaign = createAsyncThunk(
     } finally {
       dispatch(toggleIsDonating());
     }
-  }
+  },
 );
 
 interface WithdrawFromCampaignArgs {
@@ -149,7 +141,7 @@ export const withdrawFromCampaign = createAsyncThunk(
     } finally {
       dispatch(toggleIsWithdrawing());
     }
-  }
+  },
 );
 
 interface StartCampaignArgs {
@@ -164,33 +156,22 @@ export type CampaignToAdd = {
   image: string;
   video: string;
 };
-export const startCampaign = createAsyncThunk(
-  "startCampaign",
-  async ({ contract, campaignToAdd }: StartCampaignArgs, { dispatch }) => {
-    dispatch(toggleIsStartingCampaign());
-    const { title, description, target, deadline, image, video } =
-      campaignToAdd;
-    try {
-      console.log("target: ", target);
-      const tx = await contract.startCampaign(
-        title,
-        description,
-        target,
-        deadline,
-        image,
-        video
-      );
-      const receipt = await tx.wait();
-      if (receipt.status === 1) {
-        dispatch(fetchCampaigns({ contract }));
-      }
-    } catch (error) {
-      return error;
-    } finally {
-      dispatch(toggleIsStartingCampaign());
+export const startCampaign = createAsyncThunk("startCampaign", async ({ contract, campaignToAdd }: StartCampaignArgs, { dispatch }) => {
+  dispatch(toggleIsStartingCampaign());
+  const { title, description, target, deadline, image, video } = campaignToAdd;
+  try {
+    console.log("target: ", target);
+    const tx = await contract.startCampaign(title, description, target, deadline, image, video);
+    const receipt = await tx.wait();
+    if (receipt.status === 1) {
+      dispatch(fetchCampaigns({ contract }));
     }
+  } catch (error) {
+    return error;
+  } finally {
+    dispatch(toggleIsStartingCampaign());
   }
-);
+});
 
 interface ExtendDeadlineArgs {
   contract: ethers.Contract;
@@ -200,20 +181,13 @@ interface ExtendDeadlineArgs {
 }
 export const extendDeadline = createAsyncThunk(
   "extendDeadline",
-  async (
-    { contract, campaignId, newDeadline, costToExtend }: ExtendDeadlineArgs,
-    { dispatch }
-  ) => {
+  async ({ contract, campaignId, newDeadline, costToExtend }: ExtendDeadlineArgs, { dispatch }) => {
     dispatch(toggleIsTransacting());
     try {
       const campaignIdAsNumber = Number(campaignId);
-      const tx = await contract.extendDeadline(
-        campaignIdAsNumber,
-        newDeadline,
-        {
-          value: costToExtend,
-        }
-      );
+      const tx = await contract.extendDeadline(campaignIdAsNumber, newDeadline, {
+        value: costToExtend,
+      });
       const receipt = await tx.wait();
       console.log(receipt);
       if (receipt.status === 1) {
@@ -224,7 +198,7 @@ export const extendDeadline = createAsyncThunk(
     } finally {
       dispatch(toggleIsTransacting());
     }
-  }
+  },
 );
 
 interface EditCampaignArgs {
@@ -234,37 +208,25 @@ interface EditCampaignArgs {
 }
 export const editCampaign = createAsyncThunk(
   "editCampaign",
-  async (
-    { contract, campaignId, newCampaignData }: EditCampaignArgs,
-    { dispatch }
-  ) => {
+  async ({ contract, campaignId, newCampaignData }: EditCampaignArgs, { dispatch }) => {
     dispatch(toggleIsTransacting());
     const { title, description, target, image, video } = newCampaignData;
     try {
       console.log(title);
       console.log(video);
       const campaignIdAsNumber = Number(campaignId);
-      const tx = await contract.editCampaign(
-        campaignIdAsNumber,
-        title,
-        description,
-        target,
-        image,
-        video
-      );
+      const tx = await contract.editCampaign(campaignIdAsNumber, title, description, target, image, video);
       const receipt = await tx.wait();
       console.log(receipt);
       if (receipt.status === 1) {
-        dispatch(
-          fetchCampaignById({ contract, campaignId: campaignIdAsNumber })
-        );
+        dispatch(fetchCampaignById({ contract, campaignId: campaignIdAsNumber }));
       }
     } catch (error) {
       return error;
     } finally {
       dispatch(toggleIsTransacting());
     }
-  }
+  },
 );
 
 export const campaignSlice = createSlice({

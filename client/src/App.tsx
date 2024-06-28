@@ -1,26 +1,20 @@
-import { useDispatch } from "react-redux";
-import styles from "./app.module.css";
-import Header from "./Pages/Header";
-import Sidebar from "./Pages/Sidebar";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import Profile from "./Pages/Profile";
-import MyCampaigns from "./Pages/MyCampaigns/MyCampaigns";
-import Campaigns from "./Pages/Campaigns/Campaigns";
-import Campaign from "./Pages/Campaigns/Campaign";
-import About from "./Pages/About/About";
-import Preloader from "./Pages/common/Preloader";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+
 import { ethers } from "ethers";
-// import contractArtifact from "./FundFilm.json";
+
 import { FundFilmAbi } from "./abi/FundFilm";
-import {
-  setAccount,
-  setContract,
-  setCurrency,
-  setNetwork,
-  setProvider,
-  setSigner,
-} from "./Redux/web3slice";
+import styles from "./app.module.css";
+import About from "./Pages/About/About";
+import Campaign from "./Pages/Campaigns/Campaign";
+import Campaigns from "./Pages/Campaigns/Campaigns";
+import Preloader from "./Pages/common/Preloader";
+import Header from "./Pages/Header";
+import MyCampaigns from "./Pages/MyCampaigns/MyCampaigns";
+import Profile from "./Pages/Profile";
+import Sidebar from "./Pages/Sidebar";
+import { setAccount, setContract, setCurrency, setNetwork, setProvider, setSigner } from "./Redux/web3slice";
 import { networks, networksToCurrencies } from "./utils/const";
 
 function App() {
@@ -32,10 +26,7 @@ function App() {
 
   const [chosenNetwork, setChosenNetwork] = useState<string | null>(null);
 
-  const isOnCampaigns =
-    (location.pathname === "/mycampaigns" ||
-      location.pathname === "/campaigns") &&
-    chosenNetwork !== null;
+  const isOnCampaigns = (location.pathname === "/mycampaigns" || location.pathname === "/campaigns") && chosenNetwork !== null;
 
   const handleConnectWallet = async () => {
     try {
@@ -47,11 +38,7 @@ function App() {
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = web3Provider.getSigner();
         const account = await signer.getAddress();
-        const contract = new ethers.Contract(
-          chosenNetwork,
-          FundFilmAbi,
-          signer
-        );
+        const contract = new ethers.Contract(chosenNetwork, FundFilmAbi, signer);
         dispatch(setProvider(web3Provider));
         dispatch(setAccount(account));
         dispatch(setSigner(signer));
@@ -100,13 +87,28 @@ function App() {
         <Sidebar></Sidebar>
         <Header></Header>
         <Routes>
-          <Route path="profile" element={<Profile />}></Route>
-          <Route path="campaigns" element={<Campaigns />}></Route>
-          <Route path="/campaigns/:campaignId" element={<Campaign />}></Route>
+          <Route
+            path='profile'
+            element={<Profile />}
+          ></Route>
+          <Route
+            path='campaigns'
+            element={<Campaigns />}
+          ></Route>
+          <Route
+            path='/campaigns/:campaignId'
+            element={<Campaign />}
+          ></Route>
 
-          <Route path="mycampaigns" element={<MyCampaigns />}></Route>
+          <Route
+            path='mycampaigns'
+            element={<MyCampaigns />}
+          ></Route>
 
-          <Route path="about" element={<About />}></Route>
+          <Route
+            path='about'
+            element={<About />}
+          ></Route>
         </Routes>
       </div>
     );

@@ -3,6 +3,7 @@ export const dateToUnix = (dateString: string) => {
   try {
     const date = new Date(dateString);
     unixTimestamp = date.getTime() / 1000;
+
     return unixTimestamp;
   } catch (error) {
     console.error(error);

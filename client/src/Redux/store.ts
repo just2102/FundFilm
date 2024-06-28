@@ -1,6 +1,7 @@
-import web3Reducer from "./web3slice";
-import campaignReducer from "./campaignSlice";
 import { configureStore } from "@reduxjs/toolkit";
+
+import campaignReducer from "./campaignSlice";
+import web3Reducer from "./web3slice";
 
 const store = configureStore({
   reducer: {

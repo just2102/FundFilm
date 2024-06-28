@@ -4,22 +4,13 @@ const About = () => {
   return (
     <div className={styles.about}>
       <h1>About FundFilmDAO</h1>
-      <p>
-        This service is intended for movie creators to raise funds for their
-        projects.
-      </p>
+      <p>This service is intended for movie creators to raise funds for their projects.</p>
       <h2>OUR GOAL</h2>
-      <p>
-        is to connect moviemakers all over the world with their potential
-        audience.
-      </p>
+      <p>is to connect moviemakers all over the world with their potential audience.</p>
       <h2>WE BELIEVE</h2>
       <p>that realization of creative nature is of utmost importance.</p>
       <h2>WE KNOW</h2>
-      <p>
-        that making movies takes time, assets, and effort, and this is why this
-        project exists.
-      </p>
+      <p>that making movies takes time, assets, and effort, and this is why this project exists.</p>
 
       <div className={styles.meta}>
         <div className={styles.networksInfo}>
@@ -30,9 +21,9 @@ const About = () => {
         </div>
         <p>
           <a
-            href="https://github.com/just2102/"
-            target="_blank"
-            rel="noopener noreferrer"
+            href='https://github.com/just2102/'
+            target='_blank'
+            rel='noopener noreferrer'
           >
             GitHub
           </a>
