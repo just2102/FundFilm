@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { BigNumber, ethers } from "ethers";
-import { parseUnits } from "viem";
-import { writeContract } from "viem/actions";
+import { ethers } from "ethers";
 
 import { Campaign } from "../types/campaignsTypes";
 
@@ -99,7 +97,7 @@ export const fetchCampaignById = createAsyncThunk(
 );
 
 interface DonateToCampaignArgs {
-  contract: any;
+  contract: ethers.Contract;
   campaignId: number | string;
   amount: ethers.BigNumber;
 }
@@ -162,7 +160,6 @@ export const startCampaign = createAsyncThunk("startCampaign", async ({ contract
   dispatch(toggleIsStartingCampaign());
   const { title, description, target, deadline, image, video } = campaignToAdd;
   try {
-    console.log("target: ", target);
     const tx = await contract.startCampaign(title, description, target, deadline, image, video);
     const receipt = await tx.wait();
     if (receipt.status === 1) {

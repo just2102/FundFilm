@@ -5,12 +5,11 @@ import { setCampaigns, setCurrentlyDisplayedCampaign, setMyCampaigns } from "./c
 
 interface Web3State {
   account: string | null;
-  signer: any | null;
+  signer: ethers.Signer | null;
   balance: string | null;
   network: string | null;
   provider: ethers.providers.Web3Provider | null;
   contract: ethers.Contract | null;
-  transactions: any[];
   currency: string | null;
 }
 
@@ -21,7 +20,6 @@ const initialState: Web3State = {
   network: null,
   provider: null,
   contract: null,
-  transactions: [],
 
   currency: null,
 };
@@ -58,9 +56,6 @@ export const web3Slice = createSlice({
     setContract: (state, action) => {
       state.contract = action.payload;
     },
-    addTransaction: (state, action) => {
-      state.transactions.push(action.payload);
-    },
     setCurrency: (state, action) => {
       state.currency = action.payload;
     },
@@ -71,13 +66,11 @@ export const web3Slice = createSlice({
       state.network = initialState.network;
       state.provider = initialState.provider;
       state.signer = initialState.signer;
-      state.transactions = initialState.transactions;
       state.currency = initialState.currency;
     },
   },
 });
 
-export const { setAccount, setSigner, setBalance, setNetwork, setProvider, setContract, addTransaction, setCurrency, disconnectWallet } =
-  web3Slice.actions;
+export const { setAccount, setSigner, setBalance, setNetwork, setProvider, setContract, setCurrency, disconnectWallet } = web3Slice.actions;
 
 export default web3Slice.reducer;

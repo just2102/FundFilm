@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-import styles from "./Header.module.css";
-import SnackbarNotification from "./SnackbarNotification";
-import WalletConnection from "./WalletConnection";
+import arrowDownConnected from "src/assets/arrowdown-connected.svg";
+import copyIcon from "src/assets/copy.svg";
+import logoutIcon from "src/assets/logout.svg";
+import { useCustomDispatch } from "src/Redux/useCustomDispatch";
+import { useCustomSelector } from "src/Redux/useCustomSelector";
+import { disconnectRequest } from "src/Redux/web3slice";
 
-import arrowDownConnected from "../assets/arrowdown-connected.svg";
-import copyIcon from "../assets/copy.svg";
-import logoutIcon from "../assets/logout.svg";
-import { useCustomDispatch } from "../Redux/useCustomDispatch";
-import { useCustomSelector } from "../Redux/useCustomSelector";
-import { disconnectRequest } from "../Redux/web3slice";
+import SnackbarNotification from "./common/SnackbarNotification";
+import styles from "./Header.module.css";
+import WalletConnection from "./WalletConnection";
 
 const Header = () => {
   const account = useCustomSelector().web3.account;

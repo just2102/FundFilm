@@ -12,7 +12,6 @@ import Campaigns from "./Pages/Campaigns/Campaigns";
 import Preloader from "./Pages/common/Preloader";
 import Header from "./Pages/Header";
 import MyCampaigns from "./Pages/MyCampaigns/MyCampaigns";
-import Profile from "./Pages/Profile";
 import Sidebar from "./Pages/Sidebar";
 import { setAccount, setContract, setCurrency, setNetwork, setProvider, setSigner } from "./Redux/web3slice";
 import { networks, networksToCurrencies } from "./utils/const";
@@ -89,26 +88,26 @@ function App() {
         <Routes>
           <Route
             path='profile'
-            element={<Profile />}
-          ></Route>
+            element={<></>}
+          />
           <Route
             path='campaigns'
             element={<Campaigns />}
-          ></Route>
+          />
           <Route
             path='/campaigns/:campaignId'
             element={<Campaign />}
-          ></Route>
+          />
 
           <Route
             path='mycampaigns'
             element={<MyCampaigns />}
-          ></Route>
+          />
 
           <Route
             path='about'
             element={<About />}
-          ></Route>
+          />
         </Routes>
       </div>
     );

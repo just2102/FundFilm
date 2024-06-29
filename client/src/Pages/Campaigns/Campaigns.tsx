@@ -58,7 +58,7 @@ const Campaigns = () => {
     if (contract && allCampaigns.length === 0) {
       dispatch(fetchCampaigns({ contract }));
     }
-  }, [contract]);
+  }, [allCampaigns.length, contract, dispatch]);
 
   if (!contract) return <h2>Connect your wallet first!</h2>;
 
@@ -89,7 +89,7 @@ const Campaigns = () => {
         </div>
         {searchQuery && <CampaignLinks campaigns={filteredCampaigns} />}
 
-        {!searchQuery && showFinishedCampaigns && allCampaigns.length && <CampaignLinks campaigns={allCampaigns} />}
+        {!searchQuery && showFinishedCampaigns && allCampaigns.length > 0 && <CampaignLinks campaigns={allCampaigns} />}
 
         {!searchQuery && !showFinishedCampaigns && <CampaignLinks campaigns={ongoingCampaigns} />}
       </div>
