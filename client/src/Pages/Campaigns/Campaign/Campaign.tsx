@@ -38,7 +38,6 @@ const Campaign = () => {
   const dispatch = useCustomDispatch();
   let title, description, video, image, hasWithdrawn, target, amountCollected, deadline;
   if (campaign) {
-    // owner = campaign.owner;
     title = campaign.title;
     description = campaign.description;
     video = campaign.video;
@@ -114,6 +113,8 @@ const Campaign = () => {
   }, [campaignId, contract]);
   if (!contract) return null;
 
+  const deadlineText = hasWithdrawn ? `Finished: ${deadline}` : `Deadline: ${deadline}`;
+
   return (
     <>
       {!campaign && <Preloader />}
@@ -123,11 +124,10 @@ const Campaign = () => {
             <h2>{title}</h2>
             {isOwner && (
               <button onClick={onEdit}>
-                {" "}
                 <img
                   src={editIcon}
                   alt=''
-                />{" "}
+                />
               </button>
             )}
           </div>
@@ -151,20 +151,24 @@ const Campaign = () => {
 
           <div className={styles.campaign_meta}>
             <div className={`${styles.campaign_meta_item} ${styles.deadline}`}>
-              Deadline: {deadline}
-              {isOwner && <button onClick={onExtend}>EXTEND</button>}
+              {deadlineText}
+              {isOwner && !hasWithdrawn && <button onClick={onExtend}>EXTEND</button>}
             </div>
             <div className={`${styles.campaign_meta_item} ${styles.target}`}>
               Target: {target}
-              <CurrencyLogo></CurrencyLogo>
+              <CurrencyLogo />
             </div>
             <div className={`${styles.campaign_meta_item} ${styles.raised}`}>
               Raised: {amountCollected}
-              <CurrencyLogo></CurrencyLogo>
+              <CurrencyLogo />
             </div>
           </div>
 
-          <div className={styles.campaign_donate}>{!isOwner && <button onClick={onDonate}>DONATE</button>}</div>
+          {!isOwner && !hasWithdrawn && (
+            <div className={styles.campaign_donate}>
+              <button onClick={onDonate}>DONATE</button>
+            </div>
+          )}
           {isOwner && !hasWithdrawn && (
             <div className={styles.campaign_withdraw}>
               <button onClick={onWithdraw}>WITHDRAW</button>

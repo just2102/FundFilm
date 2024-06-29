@@ -2,30 +2,33 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 import { ethers } from "ethers";
 import styles from "src/Pages/Campaigns/Campaigns.module.css";
+import { Campaign } from "src/types/campaignsTypes";
+import { fromBigNumber } from "src/utils/conversion";
+import { unixToDate } from "src/utils/unixToDate";
 
-import { Campaign } from "../../types/campaignsTypes";
-import { unixToDate } from "../../utils/unixToDate";
 import CurrencyLogo from "../common/CurrencyLogo";
 
 interface Props {
   campaigns: Campaign[];
 }
+
 const CampaignLinks = ({ campaigns }: Props) => {
   const navigate = useNavigate();
 
-  const campaignsMappedAsLinks = campaigns.map((campaign: any) => {
-    const { campaignId, title, description, image, hasWithdrawn } = campaign;
+  const campaignsMappedAsLinks = campaigns.map((campaign: Campaign) => {
+    const { title, description, image, hasWithdrawn } = campaign;
+    const campaignId = fromBigNumber(campaign.campaignId);
     const formattedDescription = description.length > 100 ? description.slice(0, 100) + "..." : description;
     const target = ethers.utils.formatEther(campaign.target);
     const amountCollected = ethers.utils.formatEther(campaign.amountCollected);
-    const deadline = unixToDate(campaign.deadline);
+    const deadline = unixToDate(fromBigNumber(campaign.deadline));
 
     return (
-      <>
-        <div
-          key={campaignId}
-          className={styles.campaign}
-        >
+      <div
+        key={campaignId}
+        className={styles.campaignLinkWrap}
+      >
+        <div className={styles.campaign}>
           <NavLink
             to={`/campaigns/${campaignId}`}
             key={campaignId}
@@ -45,20 +48,20 @@ const CampaignLinks = ({ campaigns }: Props) => {
             {hasWithdrawn ? <div className={styles.deadline}>Finished</div> : <div className={styles.deadline}>Deadline: {deadline}</div>}
             <div className={styles.target}>
               Target: {target}
-              <CurrencyLogo></CurrencyLogo>
+              <CurrencyLogo />
             </div>
 
             <div className={styles.raised}>
               Raised: {amountCollected}
-              <CurrencyLogo></CurrencyLogo>
+              <CurrencyLogo />
             </div>
           </div>
 
           <div className={styles.campaign_getmoreinfo}>
-            <button onClick={() => navigate(`/campaigns/${campaignId}`)}>GET MORE INFO</button>
+            <button onClick={() => navigate(`/campaigns/${campaignId}`)}>MORE INFO</button>
           </div>
         </div>
-      </>
+      </div>
     );
   });
 

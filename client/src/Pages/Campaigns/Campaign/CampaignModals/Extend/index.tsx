@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
@@ -15,10 +15,13 @@ interface ExtendFormValues {
   newDeadline: string;
 }
 
+const serviceFeeFloat = 0.02;
+
 const ExtendModal = () => {
   const dispatch = useCustomDispatch();
 
   const contract = useCustomSelector().web3.contract;
+  const currency = useCustomSelector().web3.currency;
   const account = useCustomSelector().web3.account;
   const provider = useCustomSelector().web3.provider;
   const isTransacting = useCustomSelector().campaigns.isTransacting;
@@ -32,12 +35,7 @@ const ExtendModal = () => {
 
   const campaign = useCustomSelector().campaigns.currentlyDisplayedCampaign;
 
-  const {
-    register,
-    handleSubmit,
-    // watch,
-    // formState: { errors, balance },
-  } = useForm<ExtendFormValues>();
+  const { register, handleSubmit } = useForm<ExtendFormValues>();
   const { campaignId } = useParams();
   const onSubmit: SubmitHandler<ExtendFormValues> = async (data) => {
     if (!contract || !campaignId || !data.newDeadline || !expectedCost) {
@@ -56,19 +54,23 @@ const ExtendModal = () => {
       return;
     }
   };
-  const [expectedCost, setExpectedCost] = useState<null | number>(null);
 
-  const getExpectedCost = () => {
-    if (!campaign) return;
+  const expectedCost = useMemo(() => {
+    if (!campaign) return null;
     const campaignTarget = parseFloat(ethers.utils.formatEther(campaign.target));
-    // count expected cost (service fee is 2% of campaign target)
-    const cost = campaignTarget * 0.02;
-    setExpectedCost(cost);
-  };
+    const cost = campaignTarget * serviceFeeFloat;
+
+    return cost;
+  }, [campaign]);
+
+  const notEnoughBalance = useMemo(() => {
+    if (!expectedCost) return false;
+
+    return currentBalance < expectedCost;
+  }, [currentBalance, expectedCost]);
 
   useEffect(() => {
     getCurrentBalance();
-    getExpectedCost();
   }, [contract, account]);
 
   if (!campaign) return null;
@@ -91,14 +93,21 @@ const ExtendModal = () => {
         </p>
         {isTransacting && <Preloader></Preloader>}
         <button
-          disabled={isTransacting}
-          className={isTransacting ? "button_disabled" : "button_enabled"}
+          disabled={isTransacting || notEnoughBalance}
+          className={isTransacting || notEnoughBalance ? "button_disabled" : "button_enabled"}
           type='submit'
         >
           Extend
         </button>
         <span className='form_error'>This transaction is not free! Service fee included (2% of the target)</span>
-        <span className='form_error'>Expected cost: {expectedCost} ETH</span>
+        <span className='form_error'>
+          Expected cost: {expectedCost} {currency}
+        </span>
+        {notEnoughBalance && (
+          <span className='form_error'>
+            Current balance: {currentBalance.toFixed(5)} {currency}
+          </span>
+        )}
         {balanceError && <span className='form_error'>{balanceError}</span>}
       </form>
     </>

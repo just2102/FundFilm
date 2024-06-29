@@ -7,3 +7,7 @@ export function fromReadableAmount(amount: string, decimals?: number) {
 
   return ethers.utils.parseUnits(amount, decimals);
 }
+
+export function fromBigNumber(value: ethers.BigNumber): number {
+  return Number(value);
+}

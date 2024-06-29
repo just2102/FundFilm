@@ -32,9 +32,13 @@
   margin-bottom: 16px;
 }
 
+.campaignLinkWrap {
+  width: 90%;
+}
+
 .campaign {
   display: flex;
-  width: 90%;
+  width: 100%;
   flex-direction: column;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -77,6 +81,11 @@
   color: #555;
   margin-bottom: 8px;
 }
+
+.campaign_image {
+  padding-top: 10px;
+}
+
 .campaign_image_preview {
   width: fit-content;
 }
@@ -90,12 +99,14 @@
 .campaign_image img {
   width: 100%;
   height: 100%;
+  max-width: 750px;
   object-fit: cover;
   border-radius: 10px;
   border: 1.5px solid teal;
 }
 
 .campaign_meta {
+  padding-top: 8px;
   display: grid;
 }
 
