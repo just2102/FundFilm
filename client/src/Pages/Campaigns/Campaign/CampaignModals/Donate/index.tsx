@@ -3,15 +3,14 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
 import { ethers } from "ethers";
-import EthInput from "src/Pages/common/EthInput";
+import styles from "src/Pages/Campaigns/Campaigns.module.css";
+import EthInput from "src/Pages/common/EthInput/EthInput";
 import Preloader from "src/Pages/common/Preloader";
 import { donateToCampaign } from "src/Redux/campaignSlice";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
 
-import styles from "../../../Campaigns.module.css";
-
-interface DonateFormValues {
+export interface DonateFormValues {
   amount: string;
 }
 
@@ -34,11 +33,7 @@ const DonateModal = () => {
   const {
     register,
     handleSubmit,
-    // watch,
-    formState: {
-      errors,
-      //  balance
-    },
+    formState: { errors },
   } = useForm<DonateFormValues>();
   const { campaignId } = useParams();
   const campaign = useCustomSelector().campaigns.currentlyDisplayedCampaign;

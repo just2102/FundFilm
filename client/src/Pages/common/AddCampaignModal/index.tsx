@@ -10,7 +10,7 @@ import { ContractInteraction } from "src/types/ethersTypes";
 
 import styles from "./AddCampaignModal.module.css";
 
-import EthInput from "../EthInput";
+import EthInput from "../EthInput/EthInput";
 import Preloader from "../Preloader";
 
 export type FormValues = {

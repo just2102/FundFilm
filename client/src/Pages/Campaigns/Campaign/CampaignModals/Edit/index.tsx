@@ -4,14 +4,14 @@ import { useParams } from "react-router-dom";
 
 import { ethers } from "ethers";
 import styles from "src/Pages/common/AddCampaignModal/AddCampaignModal.module.css";
-import EthInput from "src/Pages/common/EthInput";
+import EthInput from "src/Pages/common/EthInput/EthInput";
 import Preloader from "src/Pages/common/Preloader";
 import { CampaignData, editCampaign } from "src/Redux/campaignSlice";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
 import { fromReadableAmount } from "src/utils/conversion";
 
-interface EditFormValues {
+export interface EditFormValues {
   title: string;
   description: string;
   target: string;
@@ -112,15 +112,6 @@ const EditModal = () => {
         <div className={styles.addCampaign_fieldColumn}>
           <fieldset id='newCampaignImage'>
             <legend>Image options</legend>
-            {/* <input 
-                  {...register("imageOption",)}
-                  onClick={(e)=>{setImageOption(e.target.value)}}
-                  id="uploadImage" type="radio"
-                  name="imageOption" value="upload"
-                  checked={imageOption==="upload"}
-                  />
-                  <label htmlFor="uploadImage">Upload (temporarily N/A)</label> */}
-
             <input
               {...register("imageOption")}
               onClick={(e) => {

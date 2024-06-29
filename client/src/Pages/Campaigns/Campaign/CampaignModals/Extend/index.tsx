@@ -11,7 +11,7 @@ import { ContractInteraction } from "src/types/ethersTypes";
 import { dateToUnix } from "src/utils/dateToUnix";
 import { unixToDate } from "src/utils/unixToDate";
 
-interface ExtendFormValues {
+export interface ExtendFormValues {
   newDeadline: string;
 }
 
