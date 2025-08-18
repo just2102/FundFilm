@@ -13,8 +13,12 @@ const Campaigns = () => {
   const contract = useCustomSelector().web3.contract;
   const dispatch = useCustomDispatch();
 
-  const allCampaigns = useCustomSelector().campaigns.campaigns;
+  const allCampaignsStore = useCustomSelector().campaigns.campaigns;
   const isFetching = useCustomSelector().campaigns.isFetching;
+
+  const allCampaigns = [...allCampaignsStore].sort((a, b) => {
+    return b.deadline.toNumber() - a.deadline.toNumber();
+  });
 
   const [showFinishedCampaigns, setShowFinishedCampaigns] = useState(true);
   const ongoingCampaigns = allCampaigns.filter((campaign) => {
