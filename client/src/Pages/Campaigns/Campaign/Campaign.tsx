@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 import ReactPlayer from "react-player";
 import { useParams } from "react-router-dom";
@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { Snackbar, Alert } from "@mui/material";
 import { ethers } from "ethers";
 import editIcon from "src/assets/edit.svg";
-import { fetchCampaignById, withdrawFromCampaign } from "src/Redux/campaignSlice";
+import { withdrawFromCampaign } from "src/Redux/campaignSlice";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
 import { ContractInteraction } from "src/types/ethersTypes";
@@ -19,6 +19,7 @@ import ExtendModal from "./CampaignModals/Extend";
 import CurrencyLogo from "../../common/CurrencyLogo";
 import Preloader from "../../common/Preloader";
 import styles from "../Campaigns.module.css";
+import { useRefetchCampaign } from "../hooks/useRefetchCampaign";
 
 const Campaign = () => {
   const { campaignId } = useParams();
@@ -90,27 +91,8 @@ const Campaign = () => {
     setEditModalOpen(true);
   };
 
-  if (contract) {
-    contract.on("CampaignDeadlineExtended", () => {
-      // todo: compare campaignId from event with current campaignId
-      if (campaignId) {
-        dispatch(fetchCampaignById({ contract, campaignId }));
-        setExtendModalOpen(false);
-      }
-    });
-  }
-  if (contract) {
-    contract.on("CampaignEdited", (campaignId, newCampaignData, event) => {
-      dispatch(fetchCampaignById({ contract, campaignId }));
-      setEditModalOpen(false);
-    });
-  }
+  useRefetchCampaign(campaignId);
 
-  useEffect(() => {
-    if (contract && campaignId) {
-      dispatch(fetchCampaignById({ contract, campaignId }));
-    }
-  }, [campaignId, contract]);
   if (!contract) return null;
 
   const deadlineText = hasWithdrawn ? `Finished: ${deadline}` : `Deadline: ${deadline}`;

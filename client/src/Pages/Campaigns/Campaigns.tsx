@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 
-import { fetchCampaigns, fetchCampaignById } from "src/Redux/campaignSlice";
+import { fetchCampaigns } from "src/Redux/campaignSlice";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
 
 import CampaignLinks from "./CampaignLinks";
 import styles from "./Campaigns.module.css";
+import { useRefetchCampaigns } from "./hooks/useRefetchCampaigns";
 
 import Preloader from "../common/Preloader";
 
@@ -30,33 +31,7 @@ const Campaigns = () => {
     return campaign.title.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  if (contract) {
-    contract.on("CampaignStarted", (owner, campaignId, title, description, target, deadline, image, video) => {
-      dispatch(fetchCampaigns({ contract }));
-    });
-  }
-  if (contract) {
-    contract.on("CampaignEdited", (title, description, target, image, video) => {
-      dispatch(fetchCampaigns({ contract }));
-    });
-  }
-  if (contract) {
-    contract.on("WithdrewFromCampaign", (campaignId, owner, amountWithdrawn) => {
-      dispatch(fetchCampaignById({ contract, campaignId }));
-    });
-  }
-  if (contract) {
-    // listen to DonatedToCampaign event and refetch the campaign that was donated to
-    contract.on("DonatedToCampaign", (donator, campaignId, amount) => {
-      dispatch(fetchCampaignById({ contract, campaignId }));
-    });
-  }
-  if (contract) {
-    // listen to CampaignDeadlineExtended event and refetch the campaign that was extended
-    contract.on("CampaignDeadlineExtended", (campaignId, newDeadline, feePaid) => {
-      dispatch(fetchCampaignById({ contract, campaignId }));
-    });
-  }
+  useRefetchCampaigns();
 
   useEffect(() => {
     if (contract && allCampaigns.length === 0) {
