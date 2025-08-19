@@ -13,7 +13,7 @@ export const networksToCurrencies: Record<string, NativeCurrency> = {
 };
 
 export const CHAIN_IDS: Record<string, number> = {
-  [networks.Polygon]: 137,
-  [networks.Scroll]: 534352,
-  [networks.Sepolia]: 11155111,
+  Polygon: 137,
+  Scroll: 534352,
+  Sepolia: 11155111,
 };
