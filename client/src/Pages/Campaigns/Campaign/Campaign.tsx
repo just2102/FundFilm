@@ -2,10 +2,10 @@ import { useState } from "react";
 import ReactPlayer from "react-player";
 import { useParams } from "react-router-dom";
 
-import { Snackbar, Alert } from "@mui/material";
 import { ethers } from "ethers";
 import editIcon from "src/assets/edit.svg";
 import { Modal } from "src/Pages/common/Modal";
+import SnackbarNotification from "src/Pages/common/SnackbarNotification";
 import { withdrawFromCampaign } from "src/Redux/campaignSlice";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
@@ -180,14 +180,12 @@ const Campaign = () => {
         <EditModal />
       </Modal>
 
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        autoHideDuration={1500}
-        onClose={() => setSnackbar({ open: false, message: "" })}
+      <SnackbarNotification
         open={snackbar.open}
-      >
-        <Alert severity='info'>{snackbar.message}</Alert>
-      </Snackbar>
+        onClose={() => setSnackbar({ open: false, message: "" })}
+        message={snackbar.message}
+        severity='info'
+      />
     </>
   );
 };
