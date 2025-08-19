@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
+import { NativeCurrency } from "src/types/currencies";
 
 import { setCampaigns, setCurrentlyDisplayedCampaign, setMyCampaigns } from "./campaignSlice";
 
@@ -10,7 +11,7 @@ interface Web3State {
   network: string | null;
   provider: ethers.providers.Web3Provider | null;
   contract: ethers.Contract | null;
-  currency: string | null;
+  currency: NativeCurrency | null;
 }
 
 const initialState: Web3State = {

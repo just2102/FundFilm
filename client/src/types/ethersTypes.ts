@@ -11,7 +11,6 @@ export type ContractInteraction = {
 type ContractInteractionMeta = {
   arg: {
     contract: ethers.Contract;
-    // campaignToAdd
   };
   requestId: string;
   requestStatus: string;

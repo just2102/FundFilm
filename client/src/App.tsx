@@ -14,7 +14,7 @@ import Header from "./Pages/Header";
 import MyCampaigns from "./Pages/MyCampaigns/MyCampaigns";
 import Sidebar from "./Pages/Sidebar";
 import { setAccount, setContract, setCurrency, setNetwork, setProvider, setSigner } from "./Redux/web3slice";
-import { networks, networksToCurrencies } from "./utils/const";
+import { CHAIN_IDS, networks, networksToCurrencies } from "./utils/const";
 
 function App() {
   const dispatch = useDispatch();
@@ -59,13 +59,13 @@ function App() {
         const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
         const network = await web3Provider.getNetwork();
         switch (network.chainId) {
-          case 137:
+          case CHAIN_IDS.Polygon:
             setChosenNetwork(networks.Polygon);
             break;
-          case 11155111:
+          case CHAIN_IDS.Sepolia:
             setChosenNetwork(networks.Sepolia);
             break;
-          case 534352:
+          case CHAIN_IDS.Scroll:
             setChosenNetwork(networks.Scroll);
             break;
           default:

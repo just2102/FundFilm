@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 import contractArtifact from "src/FundFilm.json";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { setAccount, setContract, setCurrency, setNetwork, setProvider, setSigner } from "src/Redux/web3slice";
-import { networks, networksToCurrencies } from "src/utils/const";
+import { CHAIN_IDS, networks, networksToCurrencies } from "src/utils/const";
 
 import NetworkModal from "./NetworkModal";
 
@@ -23,13 +23,13 @@ const WalletConnection = () => {
 
   const handleNetworkModalOpen = async () => {
     const currentlySelectedNetwork = await window.ethereum.networkVersion;
-    if (currentlySelectedNetwork === "137") {
+    if (currentlySelectedNetwork === CHAIN_IDS.Polygon) {
       setChosenNetwork(networks.Polygon);
     }
-    if (currentlySelectedNetwork === "11155111") {
+    if (currentlySelectedNetwork === CHAIN_IDS.Sepolia) {
       setChosenNetwork(networks.Sepolia);
     }
-    if (currentlySelectedNetwork === "534352") {
+    if (currentlySelectedNetwork === CHAIN_IDS.Scroll) {
       setChosenNetwork(networks.Scroll);
     }
     setNetworkModalOpen(true);
