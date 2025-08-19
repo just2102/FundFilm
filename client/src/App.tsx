@@ -16,6 +16,7 @@ import Sidebar from "./Pages/Sidebar";
 import { setAccount, setContract, setCurrency, setNetwork, setProvider, setSigner } from "./Redux/web3slice";
 import { CHAIN_IDS, networks, networksToCurrencies } from "./utils/const";
 import { routes } from "./utils/routes";
+import { useCustomSelector } from "./Redux/useCustomSelector";
 
 function App() {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ function App() {
 
   const isOnCampaigns = (location.pathname === routes.MY_CAMPAIGNS || location.pathname === routes.CAMPAIGNS) && chosenNetwork !== null;
 
+  const isConnected = useCustomSelector().web3.account;
   const handleConnectWallet = useCallback(async () => {
     try {
       setIsConnecting(true);
@@ -45,14 +47,16 @@ function App() {
         dispatch(setContract(contract));
         dispatch(setNetwork(chosenNetwork));
         dispatch(setCurrency(networksToCurrencies[chosenNetwork]));
-        navigate(routes.CAMPAIGNS);
+        if (location.pathname === routes.HOME) {
+          navigate(routes.CAMPAIGNS);
+        }
       } else throw new Error("Metamask not found");
     } catch (error) {
       console.error(error);
     } finally {
       setIsConnecting(false);
     }
-  }, [chosenNetwork, dispatch, navigate]);
+  }, [chosenNetwork, dispatch, navigate, location.pathname]);
 
   useEffect(() => {
     const detectNetwork = async () => {
@@ -76,9 +80,11 @@ function App() {
       }
     };
     detectNetwork().then(() => {
-      handleConnectWallet();
+      if (!isConnected) {
+        handleConnectWallet();
+      }
     });
-  }, [chosenNetwork, dispatch, handleConnectWallet]);
+  }, [chosenNetwork, dispatch, handleConnectWallet, isConnected]);
 
   if (isConnecting) return <Preloader loadingText={"Please wait..."} />;
   else
