@@ -7,6 +7,7 @@ import logoutIcon from "src/assets/logout.svg";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
 import { disconnectRequest } from "src/Redux/web3slice";
+import { routes } from "src/utils/routes";
 
 import SnackbarNotification from "./common/SnackbarNotification";
 import styles from "./Header.module.css";
@@ -45,9 +46,9 @@ const Header = () => {
         message='Address copied'
       />
       <nav className={styles.nav}>
-        <NavLink to={"/campaigns"}>Campaigns</NavLink>
-        <NavLink to={"/mycampaigns"}>My Campaigns</NavLink>
-        <NavLink to={"/about"}>About</NavLink>
+        <NavLink to={routes.CAMPAIGNS}>Campaigns</NavLink>
+        <NavLink to={routes.MY_CAMPAIGNS}>My Campaigns</NavLink>
+        <NavLink to={routes.ABOUT}>About</NavLink>
       </nav>
       {account ? (
         <>

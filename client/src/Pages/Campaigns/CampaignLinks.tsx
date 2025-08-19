@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import styles from "src/Pages/Campaigns/Campaigns.module.css";
 import { Campaign } from "src/types/campaignsTypes";
 import { fromBigNumber } from "src/utils/conversion";
+import { routes } from "src/utils/routes";
 import { unixToDate } from "src/utils/unixToDate";
 
 import CurrencyLogo from "../common/CurrencyLogo";
@@ -30,7 +31,7 @@ const CampaignLinks = ({ campaigns }: Props) => {
       >
         <div className={styles.campaign}>
           <NavLink
-            to={`/campaigns/${campaignId}`}
+            to={routes.campaign(campaignId)}
             key={campaignId}
           >
             <div className={styles.campaign_title}>{title}</div>
@@ -58,7 +59,7 @@ const CampaignLinks = ({ campaigns }: Props) => {
           </div>
 
           <div className={styles.campaign_getmoreinfo}>
-            <button onClick={() => navigate(`/campaigns/${campaignId}`)}>MORE INFO</button>
+            <button onClick={() => navigate(routes.campaign(campaignId))}>MORE INFO</button>
           </div>
         </div>
       </div>

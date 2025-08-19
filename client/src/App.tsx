@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
@@ -15,6 +15,7 @@ import MyCampaigns from "./Pages/MyCampaigns/MyCampaigns";
 import Sidebar from "./Pages/Sidebar";
 import { setAccount, setContract, setCurrency, setNetwork, setProvider, setSigner } from "./Redux/web3slice";
 import { CHAIN_IDS, networks, networksToCurrencies } from "./utils/const";
+import { routes } from "./utils/routes";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,9 +26,9 @@ function App() {
 
   const [chosenNetwork, setChosenNetwork] = useState<string | null>(null);
 
-  const isOnCampaigns = (location.pathname === "/mycampaigns" || location.pathname === "/campaigns") && chosenNetwork !== null;
+  const isOnCampaigns = (location.pathname === routes.MY_CAMPAIGNS || location.pathname === routes.CAMPAIGNS) && chosenNetwork !== null;
 
-  const handleConnectWallet = async () => {
+  const handleConnectWallet = useCallback(async () => {
     try {
       setIsConnecting(true);
       if (window.ethereum) {
@@ -44,14 +45,14 @@ function App() {
         dispatch(setContract(contract));
         dispatch(setNetwork(chosenNetwork));
         dispatch(setCurrency(networksToCurrencies[chosenNetwork]));
-        navigate("/campaigns");
+        navigate(routes.CAMPAIGNS);
       } else throw new Error("Metamask not found");
     } catch (error) {
       console.error(error);
     } finally {
       setIsConnecting(false);
     }
-  };
+  }, [chosenNetwork, dispatch, navigate]);
 
   useEffect(() => {
     const detectNetwork = async () => {
@@ -77,7 +78,7 @@ function App() {
     detectNetwork().then(() => {
       handleConnectWallet();
     });
-  }, [chosenNetwork]);
+  }, [chosenNetwork, dispatch, handleConnectWallet]);
 
   if (isConnecting) return <Preloader loadingText={"Please wait..."} />;
   else
@@ -87,25 +88,25 @@ function App() {
         <Header></Header>
         <Routes>
           <Route
-            path='profile'
+            path={routes.PROFILE}
             element={<></>}
           />
           <Route
-            path='campaigns'
+            path={routes.CAMPAIGNS}
             element={<Campaigns />}
           />
           <Route
-            path='/campaigns/:campaignId'
+            path={routes.CAMPAIGN}
             element={<Campaign />}
           />
 
           <Route
-            path='mycampaigns'
+            path={routes.MY_CAMPAIGNS}
             element={<MyCampaigns />}
           />
 
           <Route
-            path='about'
+            path={routes.ABOUT}
             element={<About />}
           />
         </Routes>

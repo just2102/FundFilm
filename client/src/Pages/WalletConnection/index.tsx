@@ -7,6 +7,7 @@ import contractArtifact from "src/FundFilm.json";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { setAccount, setContract, setCurrency, setNetwork, setProvider, setSigner } from "src/Redux/web3slice";
 import { CHAIN_IDS, networks, networksToCurrencies } from "src/utils/const";
+import { routes } from "src/utils/routes";
 
 import NetworkModal from "./NetworkModal";
 
@@ -52,7 +53,7 @@ const WalletConnection = () => {
         dispatch(setContract(contract));
         dispatch(setNetwork(networks[chosenNetwork]));
         dispatch(setCurrency(networksToCurrencies[chosenNetwork]));
-        navigate("/campaigns");
+        navigate(routes.CAMPAIGNS);
       } else throw new Error("Metamask not found");
     } catch (error) {
       console.error(error);
