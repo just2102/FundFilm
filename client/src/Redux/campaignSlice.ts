@@ -49,6 +49,22 @@ export const fetchCampaigns = createAsyncThunk("fetchCampaigns", async ({ contra
   }
 });
 
+export const refetchCampaigns = createAsyncThunk("refetchCampaigns", async ({ contract }: FetchCampaignsArgs, { dispatch }) => {
+  try {
+    const numberOfCampaigns = await contract.numberOfCampaigns();
+    const campaignsData = [];
+    for (let i = 0; i < numberOfCampaigns; i++) {
+      const campaign = await contract.campaigns(i);
+      campaignsData.push(campaign);
+    }
+    if (campaignsData.length > 0) {
+      dispatch(setCampaigns(campaignsData));
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 interface FetchMyCampaignsArgs {
   contract: ethers.Contract;
   account: string;

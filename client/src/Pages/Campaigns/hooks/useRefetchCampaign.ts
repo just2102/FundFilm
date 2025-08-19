@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchCampaignById } from "src/Redux/campaignSlice";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
@@ -15,5 +15,6 @@ export const useRefetchCampaign = (campaignId: string | undefined) => {
     },
     refetchInterval: 5_000,
     refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
   });
 };

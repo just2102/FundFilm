@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchCampaigns } from "src/Redux/campaignSlice";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { refetchCampaigns } from "src/Redux/campaignSlice";
 import { useCustomDispatch } from "src/Redux/useCustomDispatch";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
 
@@ -12,9 +12,11 @@ export const useRefetchCampaigns = () => {
     queryFn: () => {
       if (!contract) return null;
 
-      return dispatch(fetchCampaigns({ contract }));
+      return dispatch(refetchCampaigns({ contract }));
     },
     refetchInterval: 5_000,
     refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
+    enabled: !!contract,
   });
 };
