@@ -1,5 +1,4 @@
-import Modal from "react-modal";
-
+import { Modal } from "src/Pages/common/Modal";
 import { networks } from "src/utils/const";
 
 import styles from "./NetworkModal.module.css";
@@ -110,25 +109,8 @@ const NetworkModal = ({ isOpen, onRequestClose, chosenNetwork, setChosenNetwork,
     <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
-      style={{
-        overlay: {
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-        },
-        content: {
-          top: "50%",
-          left: "50%",
-          right: "auto",
-          bottom: "auto",
-          marginRight: "-50%",
-          transform: "translate(-50%, -50%)",
-          overflow: "auto",
-          maxHeight: "70vh",
-          backgroundColor: "#101010",
-          color: "white",
-        },
-      }}
     >
-      <div className={styles.networkModal}>
+      <div className={styles.networkModalContent}>
         <h2>Choose a network</h2>
         <div className={styles.networks}>
           {Object.keys(networks).map((network) => (

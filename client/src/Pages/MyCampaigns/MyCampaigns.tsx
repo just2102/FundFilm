@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Modal from "react-modal";
 
 import styles from "src/Pages/Campaigns/Campaigns.module.css";
 import { useCustomSelector } from "src/Redux/useCustomSelector";
@@ -8,6 +7,7 @@ import { useFetchMyCampaigns } from "./hooks/useFetchMyCampaigns";
 
 import CampaignLinks from "../Campaigns/CampaignLinks";
 import AddCampaignModal from "../common/AddCampaignModal";
+import { Modal } from "../common/Modal";
 import Preloader from "../common/Preloader";
 
 function MyCampaigns() {
@@ -37,30 +37,11 @@ function MyCampaigns() {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
-        style={customStyles}
       >
         <AddCampaignModal />
       </Modal>
     </>
   );
 }
-
-const customStyles = {
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    overflow: "auto",
-    maxHeight: "70vh",
-    backgroundColor: "#101010",
-    color: "white",
-  },
-};
 
 export default MyCampaigns;

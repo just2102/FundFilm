@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Modal from "react-modal";
 
 import githubIcon from "src/assets/github-mark-white.svg";
 import profile from "src/assets/profile.svg";
@@ -7,6 +6,7 @@ import { useCustomSelector } from "src/Redux/useCustomSelector";
 import { networks } from "src/utils/const";
 
 import AddCampaignModal from "./common/AddCampaignModal";
+import { Modal } from "./common/Modal";
 import styles from "./Sidebar.module.css";
 
 function Sidebar() {
@@ -46,7 +46,6 @@ function Sidebar() {
         </a>
       </div>
       <Modal
-        style={customStyles}
         isOpen={addCampaignModalOpen}
         onRequestClose={() => setAddCampaignModalOpen(false)}
       >
@@ -55,23 +54,5 @@ function Sidebar() {
     </>
   );
 }
-
-const customStyles = {
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    overflow: "auto",
-    maxHeight: "70vh",
-    backgroundColor: "#101010",
-    color: "white",
-  },
-};
 
 export default Sidebar;
